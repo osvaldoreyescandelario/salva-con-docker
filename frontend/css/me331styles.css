@@ -1,0 +1,223 @@
+/* ==========================
+   Estilos del Modal me331
+   ========================== */
+
+/* Encabezado del modal */
+.me331-modal-header {
+  justify-content: center;
+  color: black;
+  border-bottom: none;
+}
+
+.me331-modal-title {
+  font-weight: 700;
+}
+
+/* Fondo del modal */
+#me331-formModal .modal-content {
+  background-image: url('../images/me.jpg'); /* misma imagen de fondo */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: black;
+}
+
+/* Controles */
+#me331-formModal .form-control,
+#me331-formModal select,
+#me331-formModal textarea {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgb(233, 179, 141);
+  border-radius: 8px;
+  color: black;
+  font-size: 13px;
+}
+
+/* Ajuste inputs */
+.form-control {
+  height: calc(1.8em + .75rem + 2px);
+  padding: .4rem .75rem;
+  font-size: 13px;
+}
+
+/* Botones */
+#me331-formModal .btn {
+  background-color: chocolate;
+  color: white;
+  font-weight: bold;
+  border: 1px solid chocolate;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+#me331-formModal .btn:hover {
+  opacity: 0.9;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Dropdown */
+#me331-relacionesBtn + .dropdown-menu div {
+  font-size: 10px;
+}
+
+.me331-dropdown > .btn {
+  background-color: transparent !important;
+  color: #000 !important;
+  font-size: 12px !important;
+  font-weight: normal !important;
+  border: 1px solid #ccc;
+  text-align: left;
+  padding-left: .75rem;
+}
+
+.me331-dropdown > .btn:hover {
+  background-color: #e2e6ea;
+}
+
+/* Responsive */
+@media (max-width: 767.98px) {
+  .form-row .form-group {
+    margin-bottom: .9rem;
+  }
+}
+
+
+fieldset {
+font-size: 12px; /* Cambia el tamaño de la letra del contenido */
+}
+
+fieldset legend {
+font-size: 16px; /* Tamaño de letra del título */
+text-align: center; /* No funciona directamente en legend */
+display: flex;      /* Necesario para centrar con justify-content */
+justify-content: center;
+width: 100%;
+color: chocolate;
+}
+
+/* *********** */
+/* FIX DEFINITIVO: Checkboxes alineados en fieldset ME331 */
+#me331-formModal .form-check {
+  display: flex !important;
+  align-items: center !important;
+  padding-left: 0 !important;
+  margin-bottom: 0.5rem;
+}
+
+#me331-formModal .form-check-input {
+  margin-top: 0 !important;
+  margin-right: 0.5rem !important;
+  margin-left: 0 !important;
+  position: static !important;
+  top: auto !important;
+  vertical-align: middle !important;
+  flex-shrink: 0;
+  width: 1.2em !important;
+  height: 1.2em !important;
+}
+
+#me331-formModal .form-check-label {
+  margin-bottom: 0 !important;
+  line-height: 1.3 !important;
+  font-size: 13px !important;
+}
+
+/* Fix para columnas del fieldset */
+#me331-formModal .form-row .form-check.col-md-4 {
+  padding: 0.5rem 0 !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* ******** */
+/* MULTISELECT NATIVO ME331 - Sin Bootstrap dropdown */
+.me331-multiselect-native {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgb(233, 179, 141);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.8);
+  height: 42px;
+  cursor: pointer;
+}
+
+.me331-select-display {
+  flex: 1;
+  padding: 0.4rem 0.75rem;
+  font-size: 13px;
+  color: black;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.5;
+}
+
+.me331-select-arrow {
+  width: 30px;
+  text-align: center;
+  padding: 0.4rem 0.5rem;
+  color: #666;
+  font-size: 12px;
+  border-left: 1px solid rgba(233, 179, 141, 0.5);
+  transition: transform 0.2s;
+}
+
+.me331-multiselect-native.open .me331-select-arrow {
+  transform: rotate(180deg);
+}
+
+.me331-options-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgb(233, 179, 141);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  margin: 0;
+  padding: 0.5rem 0;
+  list-style: none;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: none;
+}
+
+.me331-multiselect-native.open .me331-options-list {
+  display: block;
+}
+
+.me331-options-list li {
+  padding: 0;
+  margin: 0;
+}
+
+.me331-options-list label {
+  display: flex;
+  align-items: center;
+  padding: 0.4rem 0.75rem;
+  margin: 0;
+  cursor: pointer;
+  font-size: 12px;
+  white-space: nowrap;
+  transition: background 0.2s;
+  width: 100%;
+}
+
+.me331-options-list label:hover {
+  background: rgba(233, 179, 141, 0.3);
+}
+
+.me331-options-list input[type="checkbox"] {
+  margin-right: 0.75rem;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.me331-options-list label span {
+  flex: 1;
+}

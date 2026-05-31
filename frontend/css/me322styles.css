@@ -1,0 +1,73 @@
+/* ==========================
+   Estilos del Modal me322
+   ========================== */
+
+/* Encabezado del modal */
+.me322-modal-header {
+  justify-content: center;
+  color: black;
+  border-bottom: none;
+}
+
+.me322-modal-title {
+  font-weight: 700;
+}
+
+/* Fondo del modal */
+#me322-formModal .modal-content {
+  background-image: url('../images/me.jpg'); /* Imagen de fondo */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: black;
+}
+
+/* Controles de formulario */
+#me322-formModal .form-control,
+#me322-formModal select,
+#me322-formModal textarea {
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgb(233, 179, 141);
+  border-radius: 8px;
+  color: black;
+  font-size: 13px;
+}
+
+/* Ajuste general de inputs */
+.form-control {
+  height: calc(1.8em + .75rem + 2px);
+  padding: .4rem .75rem;
+  font-size: 13px;
+}
+
+/* Botones */
+#me322-formModal .btn {
+  background-color: chocolate;
+  color: white;
+  font-weight: bold;
+  border: 1px solid chocolate;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+#me322-formModal .btn:hover {
+  opacity: 0.9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive en pantallas pequeñas */
+@media (max-width: 767.98px) {
+  .form-row .form-group {
+    margin-bottom: .9rem;
+  }
+}
+
+/* Ajuste solo para que label e input estén alineados en la misma fila */
+#me322-formModal .form-group label {
+  white-space: nowrap; /* Evita que el texto del label baje de línea */
+}
+
+#me322-formModal #me322-puntuacionTotal {
+  max-width: 120px; /* Ajusta el ancho del input para que no se coma todo el espacio */
+  margin-left: 10px;
+}

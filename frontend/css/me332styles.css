@@ -1,0 +1,72 @@
+/* ==========================
+   Estilos del Modal me332
+   ========================== */
+
+/* Encabezado del modal */
+.me332-modal-header {
+  justify-content: center;
+  color: black;
+  border-bottom: none;
+}
+
+.me332-modal-title {
+  font-weight: 700;
+}
+
+/* Fondo del modal */
+#me332-formModal .modal-content {
+  background-image: url('../images/me.jpg'); /* Imagen de fondo */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: black;
+}
+
+/* Controles de formulario */
+#me332-formModal .form-control,
+#me332-formModal select,
+#me332-formModal textarea {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgb(233, 179, 141);
+  border-radius: 8px;
+  color: black;
+}
+
+/* Ajuste general de los inputs */
+.form-control {
+  height: calc(1.8em + .75rem + 2px);
+  padding: .4rem .75rem;
+  font-size: 13px;
+}
+
+/* Botones */
+#me332-formModal .btn {
+  background-color: chocolate;
+  color: white;
+  font-weight: bold;
+  border: 1px solid chocolate;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+#me332-formModal .btn:hover {
+  opacity: 0.9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Centrado del legend */
+#me332-formModal fieldset legend {
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Responsive en pantallas pequeñas */
+@media (max-width: 767.98px) {
+  .form-row .form-group {
+    margin-bottom: .9rem;
+  }
+}

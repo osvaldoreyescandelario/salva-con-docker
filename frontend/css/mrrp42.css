@@ -1,0 +1,57 @@
+.mrrp42-modal-header {
+  justify-content: center;
+  border-bottom: none;
+}
+
+#mrrp42-formModal .modal-content {
+  background-image: url('../images/mRRP.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px;
+}
+
+.mrrp42-modal-title {
+  font-weight: 700;
+  color: black;
+}
+
+#mrrp42-formModal .form-control,
+#mrrp42-formModal select {
+  background-color: transparent;
+  border: 1px solid rgb(233, 179, 141);
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+#mrrp42-formModal .btn {
+  background-color: chocolate;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+}
+
+.mrrp42-open-btn {
+  background-color: chocolate;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+#mrrp42-formModal .modal-dialog {
+  max-width: 50vw;
+}
+
+@media (min-width: 1400px) {
+  #mrrp42-formModal .modal-dialog {
+    max-width: 600px;
+  }
+}
+
+/* BOTÓN GUARDAR DESHABILITADO */
+#mrrp-guardarBtn:disabled {
+  background-color: beige !important;
+  border-color: #cfcfcf !important;
+  color: #666 !important;
+  cursor: not-allowed;
+  opacity: 0.8;
+  box-shadow: none;
+}

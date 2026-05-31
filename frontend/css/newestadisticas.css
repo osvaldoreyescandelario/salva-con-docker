@@ -1,0 +1,332 @@
+/* Modal Overlay */
+.std-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  overflow: auto;
+}
+
+.std-modal-overlay.mostrar {
+  display: block;
+}
+
+/* Modal Container */
+.std-modal-container {
+  background: #fff;
+  width: 100%;
+  max-width: 1200px;
+  margin: 40px auto;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.std-modal-header {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #ccc;
+}
+
+/* Body */
+.std-modal-body {
+  display: flex;
+  min-height: 400px;
+}
+
+/* Sidebar */
+.std-sidebar {
+  width: 250px;
+  border-right: 1px solid #ccc;
+  padding: 1rem;
+}
+
+.std-sidebar-list, .std-sidebar-sublist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.std-sidebar-sublist {
+  display: none;
+  padding-left: 15px;
+}
+
+.std-sidebar-group.open > .std-sidebar-sublist {
+  display: block;
+}
+
+.std-sidebar-item {
+  cursor: pointer;
+  padding: 5px 0;
+}
+
+.std-sidebar-item.active {
+  font-weight: bold;
+  color: #1f77b4;
+}
+
+/* Content */
+.std-content {
+  flex: 1;
+  padding: 1rem;
+}
+
+/* Secciones */
+.std-section {
+  display: block; /* importante para que ECharts calcule tamaño */
+}
+
+.std-section.std-hidden {
+  display: none;
+}
+
+.std-section h3 {
+  margin-top: 0;
+}
+
+/* Flex fila para tabla + gráfico */
+.std-flex-row {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.std-flex-row > div {
+  flex: 1;
+}
+
+/* DataTables ajuste */
+.display {
+  width: 100% !important;
+}
+
+/* Footer */
+.std-modal-footer {
+  padding: 1rem;
+  border-top: 1px solid #ccc;
+  text-align: right;
+}
+
+/* reglas específicas para wrappers de gráficos 3D */
+.grafico3d-wrapper {
+  height: 350px !important;
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+
+.grafico3d-wrapper > canvas,
+.grafico3d-wrapper > div {
+  height: 100% !important;
+  width: 100% !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.std-modal-header {
+  background: #2c3e50;
+  color: white;
+  padding: 20px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: none;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.std-modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.std-btn-cerrar {
+  background: transparent;
+  color: white;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.std-btn-cerrar:hover {
+  color: #bdc3c7;
+}
+
+.std-modal-footer {
+  padding: 20px 25px;
+  background: #f8f9fa;
+  border-top: 1px solid #eee;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.std-btn-secundario,
+.std-btn-primario {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.std-btn-primario {
+  background: #2c3e50;
+  color: #7f8c8d;
+}
+
+.std-btn-primario:not(:disabled) {
+  background: #2c3e50 !important;
+  color: white !important;
+}
+
+.std-btn-primario:hover:not(:disabled) {
+  background: #34495e !important;
+}
+
+/* Botón secundario (Cerrar) */
+.std-btn-secundario {
+  background: #2c3e50;
+  color: white;
+}
+
+.std-btn-secundario:hover {
+  background: #7f8c8d;
+}
+
+/* Estado deshabilitado */
+.std-btn-primario:disabled,
+.std-btn-secundario:disabled {
+  background: #66717b !important;
+  color: #7f8c8d !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+@media (max-width: 992px) {
+
+  /* Modal más compacto */
+  .std-modal-container {
+    width: 95%;
+    margin: 20px auto;
+  }
+
+  /* Body pasa a columna */
+  .std-modal-body {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  /* Sidebar arriba */
+  .std-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #ccc;
+  }
+
+  /* Tabla + gráfico en columna */
+  .std-flex-row {
+    flex-direction: column;
+  }
+
+  .std-flex-row > div {
+    width: 100%;
+  }
+
+  /* Gráfico 3D más bajo */
+  .grafico3d-wrapper {
+    height: 300px !important;
+  }
+}
+
+@media (max-width: 576px) {
+
+  /* Header más compacto */
+  .std-modal-header {
+    padding: 12px 16px;
+  }
+
+  .std-modal-header h2 {
+    font-size: 16px;
+  }
+
+  /* Body padding reducido */
+  .std-content {
+    padding: 0.75rem;
+  }
+
+  /* Footer en columna */
+  .std-modal-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .std-btn-primario,
+  .std-btn-secundario {
+    width: 100%;
+  }
+
+  /* Gráfico aún más compacto */
+  .grafico3d-wrapper {
+    height: 260px !important;
+  }
+}
+
+
+/* Sidebar base */
+.std-sidebar {
+  width: 250px;
+  min-width: 40px;
+  max-width: 400px;
+  position: relative;
+  transition: width 0.1s;
+  overflow: hidden;
+}
+
+/* Resizer */
+.std-sidebar-resizer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 6px;
+  height: 100%;
+  cursor: ew-resize;
+  background: transparent;
+}
+
+/* Feedback visual */
+.std-sidebar-resizer:hover {
+  background: rgba(0,0,0,0.1);
+}
+
+/* Sidebar colapsada visualmente */
+.std-sidebar.collapsed h3,
+.std-sidebar.collapsed ul {
+  display: none;
+}
+
+.std-pair-block {
+  margin-bottom: 100px; /* ajusta a gusto */
+}
+
+.std-legend {
+  margin-top: 12px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  color: #555;
+  background-color: #f7f7f7;
+  border-left: 4px solid #999;
+}

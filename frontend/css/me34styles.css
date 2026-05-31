@@ -1,0 +1,576 @@
+/* ==========================
+   Estilo del Modal me34
+========================== */
+#me34-formModal .modal-dialog {
+  max-width: 1200px;   /* ajusta este valor */
+  width: 55%;          /* ancho relativo */
+}
+
+.me34-modal-header {
+  justify-content: center;
+  background-color: transparent;
+}
+
+.me34-modal-title {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+
+
+#me34-formModal .modal-content {
+  background-image: url('../images/me.jpg');   /* imagen de fondo */
+  background-size: cover;            /* cubre todo el modal */
+  background-position: center;       /* centrado */
+  background-repeat: no-repeat;
+  color: black;
+}
+
+/* Inputs */
+#me34-formModal input[type="date"] {
+  width: 100%;
+  border: 1px solid chocolate;
+  border-radius: 6px;
+  padding: 4px 6px;
+}
+
+/* Botones */
+#me34-formModal .btn-primary {
+  background-color: chocolate;
+  border-color: chocolate;
+  font-weight: bold;
+}
+
+#me34-formModal .btn-primary:hover {
+  opacity: 0.9;
+}
+
+/* Botón Cerrar con el mismo estilo que Guardar */
+#me34-formModal .me34-btn-close {
+  background-color: chocolate !important;
+  border-color: chocolate !important;
+  color: white !important;
+  font-weight: bold;
+  border-radius: 8px;
+}
+
+#me34-formModal .me34-btn-close:hover {
+  opacity: 0.9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Botones de paginación con flechas discretas */
+#me34-formModal .me34-page-btn {
+  background-color: transparent;
+  border: none;
+  color: chocolate;
+  font-size: 18px;    
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: all 0.2s ease;
+}
+
+#me34-formModal .me34-page-btn:hover {
+  color: darkorange;
+  transform: scale(1.2);
+}
+
+/* ==========================
+   Estilo de Tabs me34
+========================== */
+
+/* Fondo de tabs inactivos */
+#me34-tabs .nav-link {
+  background-color: transparent; /* fondo semi-transparente */
+  color: chocolate;                          /* texto chocolate */
+  /* font-weight: bold; */
+  /* border: 1px solid chocolate; */
+  /* border-radius: 6px 6px 0 0; */
+  margin-right: 2px;
+  transition: all 0.2s ease;
+}
+
+/* Tab activo */
+#me34-tabs .nav-link.active {
+  background-color: chocolate; /* fondo chocolate */
+  color: white;                /* texto blanco */
+}
+
+/* Hover sobre tabs */
+#me34-tabs .nav-link:hover {
+  background-color: darkorange; /* fondo naranja al pasar mouse */
+  color: white;
+}
+
+/* Separación entre tabs y contenido */
+#me34-tabs + .tab-content {
+  border-top: none;
+  padding-top: 10px;
+}
+
+
+
+/* Tabla */
+#me34-psicologia-table th {
+  background-color: chocolate;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+}
+
+.me34-disabled {
+  background-color: #f2f2f2;
+  cursor: not-allowed;
+}
+
+/* Tamaño de letra solo en las celdas de la tabla */
+#me34-psicologia-table th {
+  font-size: 14px;   
+}
+
+#me34-psicologia-table td {
+  font-size: 12px;   /* Cambia 13px por el tamaño que desees */
+}
+
+/* Tabla neuro */
+#neuro-table th {
+  background-color: chocolate;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+}
+
+#neuro-table th {
+  font-size: 14px;
+}
+
+#neuro-table td {
+  font-size: 12px;
+}
+
+.neuro-disabled {
+  background-color: #f2f2f2;
+  cursor: not-allowed;
+}
+
+/* Botones de paginación */
+#me34-formModal .neuro-page-btn {
+  background-color: transparent;
+  border: none;
+  color: chocolate;
+  font-size: 18px;    
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: all 0.2s ease;
+}
+
+#me34-formModal .neuro-page-btn:hover {
+  color: darkorange;
+  transform: scale(1.2);
+}
+
+/* Tabla Psicometría */
+#psicometria-table th {
+  background-color: chocolate;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+  font-size: 14px;
+}
+
+#psicometria-table td {
+  font-size: 12px;
+}
+
+/* Inputs deshabilitados */
+.psicometria-disabled {
+  background-color: #f2f2f2;
+  cursor: not-allowed;
+}
+
+/* Botones de paginación Psicometría */
+#psicometria-prev,
+#psicometria-next {
+  background-color: transparent;
+  border: none;
+  color: chocolate;
+  font-size: 18px;    
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: all 0.2s ease;
+}
+
+#psicometria-prev:hover,
+#psicometria-next:hover {
+  color: darkorange;
+  transform: scale(1.2);
+}
+
+
+/* ==========================
+   Tabla Psicopedagogía
+========================== */
+
+#psicopedagogia-table th {
+  background-color: chocolate;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+  font-size: 14px;
+}
+
+#psicopedagogia-table td {
+  font-size: 12px;
+}
+
+/* Inputs deshabilitados */
+.psicopedagogia-disabled {
+  background-color: #f2f2f2;
+  cursor: not-allowed;
+}
+
+/* Botones de paginación Psicopedagogía */
+#psicopedagogia-prev,
+#psicopedagogia-next {
+  background-color: transparent;
+  border: none;
+  color: chocolate;
+  font-size: 18px;    
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: all 0.2s ease;
+}
+
+#psicopedagogia-prev:hover,
+#psicopedagogia-next:hover {
+  color: darkorange;
+  transform: scale(1.2);
+}
+
+/* ==========================
+   Estilos Pedagogía (PI y EP)
+   ========================== */
+
+#psicopedagogia-table th
+/* Contenedor */
+#me34-pedagogia-container {
+  padding-top: 8px;
+}
+
+/* ==========================
+   SUBTABS (solo EP)
+========================== */
+#me34-pedagogia-subtabs .nav-link {
+  background-color: transparent;
+  color: chocolate;
+  margin-right: 6px;
+  transition: all 0.15s ease;
+  font-size: 14px;
+  border-radius: 4px;
+  padding: 3px 10px;
+}
+
+#me34-pedagogia-subtabs .nav-link.active {
+  background-color: chocolate;
+  color: white;
+}
+
+#me34-pedagogia-subtabs .nav-link:hover {
+  background-color: darkorange;
+  color: white;
+}
+
+/* ==========================
+   TABLAS (idénticas a Psicopedagogía)
+========================== */
+
+/* Encabezados */
+#pedagogia-table-common th {
+  background-color: chocolate;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  font-size: 14px;
+  border: 1px solid #c75600;
+  padding: 4px 6px;
+}
+
+/* Celdas */
+#pedagogia-table-common td {
+  font-size: 12px;
+  padding: 4px;
+  vertical-align: middle;
+  border: 1px solid #ddd;
+}
+
+/* Primera columna fija */
+#pedagogia-table-common td.ped-area {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  color: #222;
+}
+
+/* INPUT: fecha */
+#pedagogia-table-common input[type="date"] {
+  width: 100%;
+  border: 1px solid chocolate;
+  border-radius: 4px;
+  padding: 4px;
+  font-size: 12px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+/* TEXTAREA: explicación */
+#pedagogia-table-common textarea {
+  width: 100%;
+  min-height: 60px;
+  resize: vertical;
+  border: 1px solid chocolate;
+  border-radius: 4px;
+  padding: 5px;
+  font-size: 12px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+/* Inputs deshabilitados */
+.pedagogia-disabled {
+  background-color: #f2f2f2 !important;
+  cursor: not-allowed;
+  color: #777;
+}
+
+/* Ocultar tab según edulevel */
+#me34-pedagogia.hidden {
+  display: none !important;
+}
+
+/* LOGOPEDIA */
+#logopedia-table th {
+  background-color: chocolate;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+  font-size: 14px;
+}
+
+#logopedia-table td {
+  font-size: 12px;
+}
+
+#logopedia-table input[type="date"] {
+  font-size: 12px;
+  padding: 4px;
+  border: 1px solid chocolate;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#logopedia-table textarea {
+  font-size: 12px;
+  padding: 5px;
+  border: 1px solid chocolate;
+  border-radius: 4px;
+  width: 100%;
+  min-height: 60px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+/* Inputs deshabilitados si es necesario */
+.log-disabled {
+  background-color: #f2f2f2;
+  cursor: not-allowed;
+}
+
+/* Botones de paginación Logopedia */
+#logopedia-prev,
+#logopedia-next {
+  background-color: transparent;
+  border: none;
+  color: chocolate;
+  font-size: 18px;    
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: all 0.2s ease;
+}
+
+#logopedia-prev:hover,
+#logopedia-next:hover {
+  color: darkorange;
+  transform: scale(1.2);
+}
+
+/* ==== TAB OTROS ==== */
+
+#me34-otros label {
+  font-size: 12px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 4px;
+}
+
+#me34-otros select {
+  font-size: 12px;
+  padding: 4px 6px;
+  border: 1px solid chocolate;
+  border-radius: 4px;
+  width: 100%;
+}
+
+/* Separación adecuada entre controles */
+#otros-container .form-group {
+  margin-bottom: 15px;
+}
+
+
+/* ==========================================
+   RESPONSIVIDAD DEL MODAL ME34
+========================================== */
+
+/* Pantallas grandes (desktop) – ya lo tienes */
+#me34-formModal .modal-dialog {
+  max-width: 1200px;
+  width: 55%;
+}
+
+/* Pantallas medianas (tablets) */
+@media (max-width: 992px) {
+  #me34-formModal .modal-dialog {
+    width: 75%;
+    max-width: 900px;
+  }
+
+  #me34-formModal .modal-title {
+    font-size: 18px;
+  }
+
+  #me34-formModal input[type="date"],
+  #me34-formModal textarea,
+  #me34-formModal select {
+    font-size: 12px;
+  }
+}
+
+/* Pantallas pequeñas (celulares grandes / tablets vertical) */
+@media (max-width: 768px) {
+  #me34-formModal .modal-dialog {
+    width: 90%;
+    max-width: 600px;
+    margin: 15px auto;
+  }
+
+  #me34-formModal .modal-content {
+    background-size: cover;
+    background-position: center;
+  }
+
+  #me34-tabs .nav-link {
+    font-size: 12px;
+    padding: 4px 6px;
+  }
+
+  #me34-formModal .btn-primary,
+  #me34-formModal .me34-btn-close {
+    width: 100%;
+    margin-bottom: 6px;
+  }
+}
+
+/* Pantallas muy pequeñas (celulares pequeños) */
+@media (max-width: 480px) {
+  #me34-formModal .modal-dialog {
+    width: 95%;
+    max-width: none;
+  }
+
+  #me34-formModal .modal-title {
+    font-size: 16px;
+  }
+
+  #me34-tabs .nav-link {
+    font-size: 11px;
+    padding: 3px 4px;
+  }
+
+  #me34-formModal input[type="date"],
+  #me34-formModal textarea,
+  #me34-formModal select {
+    font-size: 11px;
+    padding: 3px 5px;
+  }
+
+  #logopedia-table th,
+  #psicopedagogia-table th,
+  #psicometria-table th,
+  #neuro-table th,
+  #me34-psicologia-table th {
+    font-size: 12px;
+  }
+
+  #logopedia-table td,
+  #psicopedagogia-table td,
+  #psicometria-table td,
+  #neuro-table td,
+  #me34-psicologia-table td {
+    font-size: 11px;
+  }
+}
+
+/* Botones */
+.me34-pager button {
+  background-color: chocolate;      /* azul Bootstrap */
+  border: none;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+/* Hover */
+.me34-pager button:hover {
+  background-color: transparent;;
+  color: chocolate;
+}
+
+/* Botón deshabilitado visual */
+.me34-pager button:disabled {
+  background-color: transparent;
+  cursor: not-allowed;
+}
+
+/* ==============================
+   TABS PEDAGOGÍA – ESTILO ÚNICO
+   ============================== */
+
+#me34-pedagogia-container .nav-tabs {
+  border-bottom: 2px solid #dee2e6;
+  margin-bottom: 12px;
+}
+
+/* Todos los tabs (Lengua, Matemáticas, Historia) */
+#me34-pedagogia-container .nav-tabs .nav-link {
+  background-color: #f8f9fa;
+  color: chocolate;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px 8px 0 0;
+  padding: 8px 18px;
+  margin-right: 6px;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Hover (todos iguales) */
+#me34-pedagogia-container .nav-tabs .nav-link:hover {
+  background-color: #e9ecef;
+  color: chocolate;
+}
+
+/* Activo (uno solo, pero mismo estilo) */
+#me34-pedagogia-container .nav-tabs .nav-link.active {
+  background-color: chocolate;
+  color: #ffffff;
+  border-bottom: 3px solid #ffffff;
+}

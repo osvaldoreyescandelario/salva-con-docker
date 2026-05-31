@@ -1,0 +1,192 @@
+/* MODAL */
+#regp-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+#regp-modal.mostrar {
+  display: flex;
+}
+
+/* CONTENEDOR */
+.regp-container {
+  background: white;
+  border-radius: 12px;
+  width: fit-content; /* 🔹 se ajusta al contenido */
+  max-width: 600px;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* HEADER */
+.regp-header {
+  background: #2c3e50;
+  color: white;
+  padding: 20px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.regp-header h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.regp-btn-cerrar {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* BODY */
+.regp-body {
+  display: flex;
+  gap: 20px;
+  padding: 25px;
+  height: auto; /* 🔹 IMPORTANTE */
+  align-items: flex-start; /* 🔹 evita estiramiento */
+}
+
+/* ========================= */
+/* USUARIOS */
+/* ========================= */
+
+.regp-usuarios-section {
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.regp-usuarios-section h3 {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+/* LISTA */
+.regp-lista {
+  border: 2px solid #2c3e50;
+  border-radius: 6px;
+  padding: 5px;
+
+  max-height: 400px;
+  width: 180px; /* ancho exacto */
+  height: 350px;
+  overflow-y: auto;
+}
+
+/* ITEM */
+.regp-usuario {
+  padding: 10px;
+  margin-bottom: 6px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+}
+
+.regp-usuario:hover {
+  background: #e9ecef;
+}
+
+.regp-usuario.seleccionado {
+  background: #3498db;
+  color: white;
+}
+
+/* ========================= */
+/* ROLES */
+/* ========================= */
+
+.regp-roles-section {
+  flex: 0;
+  width: fit-content;
+}
+
+.regp-roles-section h3 {
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.regp-radios {
+  display: grid;
+  grid-template-columns: max-content max-content; /* 🔹 clave */
+  column-gap: 10px;
+  row-gap: 10px;
+  justify-content: start; /* 🔹 evita que se expandan */
+}
+
+.regp-radios label {
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.regp-radios input {
+  margin-right: 6px;
+  accent-color: #3498db;
+}
+
+/* ========================= */
+/* BOTÓN */
+/* ========================= */
+
+.regp-btn-aprobar {
+  padding: 12px;
+  width: 270px;
+  border: none;
+  border-radius: 8px;
+  background: #2c3e50;
+  color: #7f8c8d;
+  font-size: 14px;
+  cursor: not-allowed;
+  transition: all 0.2s;
+  margin-top: 10px;
+}
+
+.regp-btn-aprobar.activo {
+  color: white;
+  cursor: pointer;
+}
+
+.regp-btn-aprobar.activo:hover {
+  background: #1f2d3a;
+}
+
+/* ========================= */
+/* SCROLL PERSONALIZADO */
+/* ========================= */
+
+.regp-lista::-webkit-scrollbar {
+  width: 6px;
+}
+
+.regp-lista::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.regp-lista::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.regp-lista::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+input[name="regp-rol"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

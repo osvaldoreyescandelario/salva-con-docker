@@ -1,0 +1,1158 @@
+const { pool } = require("../config/db");
+const { runQuery } = require("../utils/dbUtils");
+const { getRedisValue, setRedisValue } = require("../utils/redisUtils");
+const { handleUserPermissions } = require("../services/userService");
+const { sendEmail } = require("../config/mailer");
+
+const {
+  auditAction,
+  AUDIT_ACTIONS,
+  AUDIT_ENTITIES
+} = require("../middlewares/audit");
+
+exports.usersid = async (req, res) => {
+  const id = req.params.id;
+  const conn = await pool.getConnection();
+
+  try {
+    // 1️⃣ Buscar usuario en la tabla users
+    const [rows] = await conn.execute(
+      `SELECT userid FROM users WHERE userid = ? LIMIT 1`,
+      [id]
+    );
+
+    const exists = rows.length > 0;
+
+    // ✅ No se audita una consulta simple de existencia
+
+    res.json({ exists });
+  } catch (err) {
+    console.error("❌ Error en /api/users/:id:", err.message);
+    res.status(500).json({ exists: false, error: err.message });
+  } finally {
+    conn.release();
+  }
+};
+
+exports.login = async (req, res) => {
+  const { user, pass } = req.body;
+
+  if (!user || !pass) {
+    return res
+      .status(400)
+      .json({ message: "Usuario y contraseña son requeridos." });
+  }
+
+  const queryUser = "SELECT * FROM users WHERE userid = ? LIMIT 1";
+
+  try {
+    // 🔓 CONSULTA DIRECTA - SIN runQuery (evita auditoría que bloquea)
+    const [results] = await pool.execute(queryUser, [user]);
+
+    if (results.length === 0) {
+      await auditAction({
+        req,
+        actor: null,
+        action: AUDIT_ACTIONS.LOGIN_FAILED,
+        entity: AUDIT_ENTITIES.USER,
+        entityId: user,
+        description: `Intento de login fallido: usuario no existe`
+      });
+      return res.status(404).json({
+        message: "🛑 El usuario no existe. Debe registrarse primero."
+      });
+    }
+
+    const userData = results[0];
+
+    // Contraseña incorrecta
+    if (userData.userpass !== pass) {
+      await auditAction({
+        req,
+        actor: null,
+        action: AUDIT_ACTIONS.LOGIN_FAILED,
+        entity: AUDIT_ENTITIES.USER,
+        entityId: user,
+        description: `Intento de login fallido: contraseña incorrecta`
+      });
+      return res.status(401).json({ message: "🛑 Contraseña incorrecta." });
+    }
+
+    // Usuario pendiente o bloqueado
+    if (userData.registeredpend === 1 || userData.active === 0) {
+      return res.status(403).json({
+        message:
+          userData.registeredpend === 1
+            ? "⚠️ Registro pendiente de ser aprobado."
+            : "⚠️ Usuario bloqueado."
+      });
+    }
+
+    // Roles del usuario - SIN runQuery
+    const rolesQuery = `
+      SELECT r.idr, r.name, r.description
+      FROM auxrols r
+      JOIN auxusersrol ur ON r.idr = ur.rol_id
+      WHERE ur.userid = ?
+    `;
+    const [rolesResults] = await pool.execute(rolesQuery, [user]);
+
+    // ⭐ PERMISOS POR ROL - SIN runQuery
+    const permisosByRoleQuery = `
+      SELECT DISTINCT p.idp, p.name, p.resource, p.tooltip
+      FROM auxpermissions p
+      JOIN auxrolspermissions rp ON p.idp = rp.permission_id
+      JOIN auxrols r ON rp.rol_id = r.idr
+      JOIN auxusersrol ur ON r.idr = ur.rol_id
+      WHERE ur.userid = ?
+    `;
+    const [permisosByRoleResults] = await pool.execute(permisosByRoleQuery, [
+      user
+    ]);
+
+    // ⭐ PERMISOS EXTRAS - SIN runQuery
+    const permisosExtraQuery = `
+      SELECT DISTINCT p.idp, p.name, p.resource, p.tooltip
+      FROM auxpermissions p
+      JOIN auxmoreuserpermissions ump ON p.idp = ump.permission_id
+      WHERE ump.userid = ?
+    `;
+    const [permisosExtraResults] = await pool.execute(permisosExtraQuery, [
+      user
+    ]);
+
+    // Auditoría login exitoso
+    await auditAction({
+      req,
+      actor: { username: user },
+      action: AUDIT_ACTIONS.LOGIN,
+      entity: AUDIT_ENTITIES.USER,
+      entityId: user,
+      description: "Inicio de sesión exitoso",
+      metadata: {
+        roles_count: rolesResults.length,
+        permisos_count:
+          permisosByRoleResults.length + permisosExtraResults.length
+      }
+    });
+
+    // ⭐ COMBINAR permisos: rol + extras (sin duplicados)
+    const todosPermisos = [...permisosByRoleResults, ...permisosExtraResults];
+    const permisosUnicos = todosPermisos.reduce((acc, permiso) => {
+      if (!acc.some((p) => p.name === permiso.name)) {
+        acc.push(permiso);
+      }
+      return acc;
+    }, []);
+
+    // Respuesta exitosa
+    res.json({
+      message: "",
+      userid: userData.userid,
+      fullname: userData.fullname,
+      useremail: userData.useremail,
+      userspec: userData.userspec,
+      municipality: userData.municipality,
+      province: userData.province,
+      active: userData.active,
+      registeredpend: userData.registeredpend,
+      rols: rolesResults.map((r) => r.name),
+      permissions: permisosUnicos.map((p) => p.name) // ✅ Incluye rol + extras
+    });
+  } catch (err) {
+    console.error("💥 ERROR COMPLETO en login:", err);
+    return res.status(500).json({ message: "Error en la base de datos" });
+  }
+};
+
+exports.newuser = async (req, res) => {
+  const user = req.body;
+  const conn = await pool.getConnection();
+
+  try {
+    await conn.beginTransaction();
+
+    // Limpiar y validar campos
+    const cleanUser = {
+      userid: user.userid?.trim(),
+      userpass: user.userpass,
+      useremail: user.useremail?.trim().toLowerCase(),
+      userspec: user.userspec?.trim(),
+      active: parseInt(user.active) || 0,
+      registeredpend: parseInt(user.registeredpend) || 1,
+      fullname: user.fullname?.trim(),
+      municipality: user.municipality?.trim(),
+      province: user.province?.trim(),
+      roles: user.roles || [],
+      permissions: user.permissions || []
+    };
+
+    const required = [
+      "userid",
+      "userpass",
+      "useremail",
+      "userspec",
+      "fullname",
+      "municipality",
+      "province"
+    ];
+    for (const field of required) {
+      if (!cleanUser[field] || cleanUser[field] === "") {
+        return res
+          .status(400)
+          .json({ error: `Falta el campo obligatorio: ${field}` });
+      }
+    }
+
+    const allowedSpecs = [
+      "Ninguno",
+      "Psicología",
+      "Psicopedagogía",
+      "Logopedia",
+      "Psicometría",
+      "Pedagogía"
+    ];
+    if (!allowedSpecs.includes(cleanUser.userspec)) {
+      return res
+        .status(400)
+        .json({ error: `Especialidad inválida: ${cleanUser.userspec}` });
+    }
+
+    // 🚨 TRIGGER BACKEND: Asignar alarmas VIGENTES al nuevo usuario
+    console.log(
+      `🔄 [TRIGGER] Asignando alarmas vigentes a ${cleanUser.userid}`
+    );
+    await conn.execute(
+      `
+      INSERT IGNORE INTO alarms_users (alarms_ida, userid, scheduledate, \`read\`)
+      SELECT DISTINCT a.ida, ?, NOW(), 0
+      FROM alarms a
+      WHERE a.active = 1
+        AND a.startdate <= NOW()
+        AND (a.endingdate IS NULL OR a.endingdate >= NOW())
+        AND (
+          (a.scope_type = 'self' AND a.username = ?) OR
+          (a.scope_type = 'municipio' AND a.scope_valor = ?) OR
+          (a.scope_type = 'provincia' AND a.scope_valor = ?) OR
+          (a.scope_type = 'global') OR
+          (a.scope_type = 'rol' AND 
+          EXISTS (
+            SELECT 1 FROM auxusersrol aur 
+            JOIN auxrols r ON aur.rol_id = r.idr 
+            WHERE aur.userid = ? AND r.name = a.scope_valor
+          ))
+        )
+    `,
+      [
+        cleanUser.userid,
+        cleanUser.userid,
+        cleanUser.municipality,
+        cleanUser.province,
+        cleanUser.userid
+      ]
+    );
+
+    // Insertar usuario
+    const sqlUsers = `
+      INSERT INTO users
+      (userid, userpass, useremail, userspec, active, registeredpend,
+       fullname, municipality, province)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    await conn.execute(sqlUsers, [
+      cleanUser.userid,
+      cleanUser.userpass,
+      cleanUser.useremail,
+      cleanUser.userspec,
+      cleanUser.active,
+      cleanUser.registeredpend,
+      cleanUser.fullname,
+      cleanUser.municipality,
+      cleanUser.province
+    ]);
+
+    // Asignar roles (DESPUÉS del trigger porque usa auxusersrol)
+    for (const rolName of cleanUser.roles) {
+      const [rolResult] = await conn.execute(
+        "SELECT idr FROM auxrols WHERE name = ?",
+        [rolName.trim()]
+      );
+      if (rolResult.length > 0) {
+        await conn.execute(
+          "INSERT INTO auxusersrol (userid, rol_id) VALUES (?, ?)",
+          [cleanUser.userid, rolResult[0].idr]
+        );
+      }
+    }
+
+    // Auditoría
+    await auditAction({
+      req,
+      actor: req.user,
+      action: AUDIT_ACTIONS.CREATE,
+      entity: AUDIT_ENTITIES.USER,
+      entityId: cleanUser.userid,
+      description: `Creación de usuario con roles: [${cleanUser.roles.join(
+        ", "
+      )}]`,
+      newState: { ...cleanUser, userpass: undefined }
+    });
+
+    await conn.commit();
+
+    res.json({
+      success: true,
+      userid: cleanUser.userid,
+      roles: cleanUser.roles,
+      permisos: cleanUser.permissions,
+      message: "Usuario creado + alarmas vigentes asignadas"
+    });
+  } catch (err) {
+    await conn.rollback();
+    console.error("❌ Error /api/newuser:", err);
+    res.status(500).json({ error: err.message || "Error interno" });
+  } finally {
+    conn.release();
+  }
+};
+
+exports.userspending = async (req, res) => {
+  const conn = await pool.getConnection();
+
+  try {
+    console.log("🔥 HIT userspending");
+
+    const [rows] = await conn.execute(`
+      SELECT userid, registeredpend
+      FROM saidicdo.users
+    `);
+
+    console.log("TOTAL ROWS:", rows.length);
+    console.log("SAMPLE ROWS:", rows.slice(0, 5));
+
+    const filtered = rows.filter((r) => r.registeredpend == 1);
+
+    console.log("FILTERED:", filtered);
+
+    return res.json({
+      userIds: filtered.map((u) => u.userid)
+    });
+  } catch (err) {
+    console.error("❌ ERROR:", err);
+    return res.status(500).json({ error: err.message });
+  } finally {
+    conn.release();
+  }
+};
+
+exports.approve = async (req, res) => {
+  const { userid, rolId } = req.body;
+
+  if (!userid || !rolId) {
+    return res.status(400).json({
+      error: "userid y rolId son requeridos"
+    });
+  }
+
+  const conn = await pool.getConnection();
+
+  try {
+    await conn.beginTransaction();
+
+    // 1️⃣ Activar usuario
+    const [updateUser] = await conn.execute(
+      `
+      UPDATE users
+      SET active = 1,
+          registeredpend = 0
+      WHERE userid = ?
+    `,
+      [userid]
+    );
+
+    if (updateUser.affectedRows === 0) {
+      throw new Error("Usuario no encontrado");
+    }
+
+    // 2️⃣ Verificar si ya tiene rol
+    const [existing] = await conn.execute(
+      `
+      SELECT *
+      FROM auxusersrol
+      WHERE userid = ?
+    `,
+      [userid]
+    );
+
+    if (existing.length > 0) {
+      // 3️⃣ Actualizar rol existente
+      await conn.execute(
+        `
+        UPDATE auxusersrol
+        SET rol_id = ?
+        WHERE userid = ?
+      `,
+        [rolId, userid]
+      );
+    } else {
+      // 4️⃣ Insertar nuevo rol
+      await conn.execute(
+        `
+        INSERT INTO auxusersrol (userid, rol_id)
+        VALUES (?, ?)
+      `,
+        [userid, rolId]
+      );
+    }
+
+    await conn.commit();
+
+    return res.json({
+      success: true,
+      message: "Usuario aprobado correctamente"
+    });
+  } catch (err) {
+    await conn.rollback();
+
+    console.error("❌ Error en approve:", err);
+
+    return res.status(500).json({
+      error: err.message
+    });
+  } finally {
+    conn.release();
+  }
+};
+
+exports.recoverycode = async (req, res) => {
+  const { username, codeForPass } = req.body;
+
+  if (!username || typeof username !== "string" || username.length > 50) {
+    return res.status(400).json({ error: "Username inválido" });
+  }
+
+  try {
+    const [rows] = await runQuery(
+      "SELECT useremail FROM users WHERE userid = ?",
+      [username],
+      req,
+      { username }
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    const useremail = rows[0].useremail;
+
+    // ✅ EMAIL SIMPLE Y SEGURO (sin regex vulnerable)
+    const isValidEmail = (email) => {
+      if (!email || typeof email !== "string" || email.length > 254)
+        return false;
+      if (email.includes("..") || email.includes("  ")) return false;
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    };
+
+    if (!isValidEmail(useremail)) {
+      console.error("Email inválido en BD:", useremail);
+      return res.status(500).json({ error: "Error interno" });
+    }
+
+    const safeEmail = String(useremail).replace(/[\r\n\t]/g, "");
+    const safeCode = String(codeForPass).replace(/[\r\n\t]/g, "");
+
+    safeCode;
+    console.log("safeCode: ", safeCode);
+    await sendEmail(
+      safeEmail,
+      "Código para cambiar la contraseña",
+      `Tu código es: ${safeCode}`
+    );
+
+    await auditAction({
+      req,
+      actor: { username },
+      action: AUDIT_ACTIONS.PASSWORD_CHANGE,
+      entity: AUDIT_ENTITIES.USER,
+      entityId: username,
+      description: `Se envió código de recuperación por correo`,
+      metadata: { email: useremail }
+    });
+
+    res.status(200).json({ message: "Correo enviado" });
+  } catch (error) {
+    console.error("Error recuperación:", error.message);
+    res.status(500).json({ error: "Error interno" });
+  }
+};
+
+exports.updatepassword = async (req, res) => {
+  const { username, newpass } = req.body;
+  const sql = "UPDATE users SET userpass = ? WHERE userid = ?";
+
+  try {
+    const [result] = await runQuery(sql, [newpass, username], req);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Auditoría
+    await auditAction({
+      req,
+      actor: { username },
+      action: AUDIT_ACTIONS.PASSWORD_CHANGE,
+      entity: AUDIT_ENTITIES.USER,
+      entityId: username,
+      description: `Se actualizó la contraseña del usuario`,
+      newState: { userpass: undefined } // nunca auditar la contraseña real
+    });
+
+    res.json({ message: "Contraseña actualizada" });
+  } catch (error) {
+    console.error("Error en actualización de contraseña:", error);
+    res.status(500).json({ message: "Error interno" });
+  }
+};
+
+exports.usersave = async (req, res) => {
+  const { rows, username } = req.body;
+  const conn = await pool.getConnection();
+
+  try {
+    await conn.beginTransaction();
+
+    for (const row of rows) {
+      const {
+        userid, // PK original ('' = nuevo usuario)
+        usuario, // Nuevo userid para INSERT
+        userpass,
+        useremail,
+        userspec,
+        fullname,
+        active,
+        registeredpend,
+        municipality,
+        province,
+        rols,
+        permisos // ⭐ Array de nombres de permisos extras ["sujeto_solicitar"]
+      } = row;
+
+      // Determinar userid final
+      const finalUserid =
+        userid === "" ? usuario : usuario !== userid ? usuario : userid;
+
+      if (userid === "") {
+        // 🔹 INSERT NUEVO USUARIO
+        if (!finalUserid) {
+          throw new Error('Falta "usuario" para nuevo usuario');
+        }
+
+        // 1. Insertar usuario base
+        await conn.execute(
+          `INSERT INTO users 
+           (userid, userpass, useremail, userspec, fullname, 
+            active, registeredpend, municipality, province)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [
+            finalUserid,
+            userpass || null,
+            useremail || null,
+            userspec || null,
+            fullname || null,
+            active,
+            registeredpend,
+            municipality || null,
+            province || null
+          ]
+        );
+
+        // 2. Insertar roles
+        if (rols && Array.isArray(rols)) {
+          for (const rolName of rols) {
+            const [rolRows] = await conn.execute(
+              "SELECT idr FROM auxrols WHERE name = ?",
+              [rolName]
+            );
+            if (rolRows.length > 0) {
+              await conn.execute(
+                "INSERT INTO auxusersrol (userid, rol_id) VALUES (?, ?)",
+                [finalUserid, rolRows[0].idr]
+              );
+            }
+          }
+        }
+
+        // 3. ⭐ Insertar permisos extras (si existen)
+        if (permisos && Array.isArray(permisos) && permisos.length > 0) {
+          await handleUserPermissions(conn, finalUserid, permisos);
+        }
+
+        // Auditoría
+        await auditAction({
+          req,
+          actor: { username },
+          action: AUDIT_ACTIONS.CREATE,
+          entity: AUDIT_ENTITIES.USER,
+          entityId: finalUserid,
+          description: `Nuevo usuario creado: ${finalUserid}`
+        });
+      } else {
+        // 🔹 UPDATE USUARIO EXISTENTE
+
+        // 1. Actualizar tabla users
+        await conn.execute(
+          `UPDATE users SET
+            userid = ?, userpass = ?, useremail = ?, userspec = ?, 
+            fullname = ?, active = ?, registeredpend = ?, 
+            municipality = ?, province = ?
+           WHERE userid = ?`,
+          [
+            finalUserid,
+            userpass || null,
+            useremail || null,
+            userspec || null,
+            fullname || null,
+            active,
+            registeredpend,
+            municipality || null,
+            province || null,
+            userid // userid original para WHERE
+          ]
+        );
+
+        // 2. Actualizar roles (borrar + insertar)
+        await conn.execute("DELETE FROM auxusersrol WHERE userid = ?", [
+          finalUserid
+        ]);
+        if (rols && Array.isArray(rols)) {
+          for (const rolName of rols) {
+            const [rolRows] = await conn.execute(
+              "SELECT idr FROM auxrols WHERE name = ?",
+              [rolName]
+            );
+            if (rolRows.length > 0) {
+              await conn.execute(
+                "INSERT INTO auxusersrol (userid, rol_id) VALUES (?, ?)",
+                [finalUserid, rolRows[0].idr]
+              );
+            }
+          }
+        }
+
+        // 3. ⭐ MANEJAR PERMISOS EXTRAS
+        if (permisos && Array.isArray(permisos) && permisos.length > 0) {
+          // Hay permisos → borrar existentes + insertar nuevos
+          await handleUserPermissions(conn, finalUserid, permisos);
+        } else {
+          // permisos vacío/null/undefined → BORRAR TODOS
+          await conn.execute(
+            "DELETE FROM auxmoreuserpermissions WHERE userid = ?",
+            [finalUserid]
+          );
+        }
+
+        // Auditoría
+        await auditAction({
+          req,
+          actor: { username },
+          action: AUDIT_ACTIONS.UPDATE,
+          entity: AUDIT_ENTITIES.USER,
+          entityId: finalUserid,
+          description: `Usuario actualizado: ${userid} → ${finalUserid}`
+        });
+      }
+    }
+
+    await conn.commit();
+    res.json({ success: true });
+  } catch (err) {
+    await conn.rollback();
+    console.error("❌ Error guardando usuarios:", err);
+    res.status(500).json({ error: err.message });
+  } finally {
+    conn.release();
+  }
+};
+
+exports.rols = async (req, res) => {
+  const conn = await pool.getConnection();
+  try {
+    const [rows] = await conn.execute(
+      "SELECT idr, name FROM auxrols ORDER BY idr ASC"
+    );
+    const result = rows.map((r) => ({ idr: r.idr, name: r.name }));
+    res.json(result);
+  } catch (err) {
+    console.error("❌ Error en /api/rols:", err);
+    res.status(500).json({ message: "Error interno en el servidor" });
+  } finally {
+    conn.release();
+  }
+};
+
+exports.permissions = async (req, res) => {
+  const conn = await pool.getConnection();
+  try {
+    const [rows] = await conn.execute(
+      "SELECT name, resource, tooltip FROM auxpermissions ORDER BY idp ASC"
+    );
+    const result = rows.map((p) => ({
+      name: p.name,
+      resource: p.resource,
+      tooltip: p.tooltip
+    }));
+    res.json(result);
+  } catch (err) {
+    console.error("❌ Error en /api/permissions:", err);
+    res.status(500).json({ message: "Error interno en el servidor" });
+  } finally {
+    conn.release();
+  }
+};
+
+exports.permisosporrol = async (req, res) => {
+  const conn = await pool.getConnection();
+  try {
+    const [rows] = await conn.execute(`
+      SELECT rp.rol_id, ap.name as permiso_name
+      FROM auxrolspermissions rp
+      JOIN auxpermissions ap ON rp.permission_id = ap.idp
+      ORDER BY rp.rol_id, ap.name
+    `);
+
+    const permisosPorRol = {};
+    rows.forEach((row) => {
+      if (!permisosPorRol[row.rol_id]) permisosPorRol[row.rol_id] = [];
+      permisosPorRol[row.rol_id].push(row.permiso_name);
+    });
+
+    const [roles] = await conn.execute("SELECT idr FROM auxrols ORDER BY idr");
+    roles.forEach((rol) => {
+      if (!permisosPorRol[rol.idr]) permisosPorRol[rol.idr] = [];
+    });
+
+    res.json(permisosPorRol);
+  } catch (err) {
+    console.error("❌ Error en /api/permisos-por-rol:", err);
+    res.status(500).json({ message: "Error interno en el servidor" });
+  } finally {
+    conn.release();
+  }
+};
+
+exports.saveRolPermissions = async (req, res) => {
+  const { username, permisosPorRol } = req.body;
+  const conn = await pool.getConnection();
+
+  try {
+    await conn.beginTransaction();
+
+    // 🔹 Limpiar permisos existentes
+    await conn.execute("DELETE FROM auxrolspermissions");
+
+    for (const rolId of Object.keys(permisosPorRol)) {
+      const permisos = permisosPorRol[rolId];
+      for (const permisoName of permisos) {
+        // 🔹 Obtener el ID del permiso
+        const [permRows] = await conn.execute(
+          "SELECT idp FROM auxpermissions WHERE name = ? LIMIT 1",
+          [permisoName]
+        );
+        if (!permRows.length) continue;
+
+        const permissionId = permRows[0].idp;
+
+        // 🔹 Insertar el permiso
+        await conn.execute(
+          "INSERT INTO auxrolspermissions (rol_id, permission_id) VALUES (?, ?)",
+          [rolId, permissionId]
+        );
+
+        // 🧾 Auditoría usando auditAction
+        await auditAction({
+          req,
+          actor: { username },
+          action: AUDIT_ACTIONS.PERMISSION_CHANGE,
+          entity: AUDIT_ENTITIES.ROLE,
+          entityId: rolId,
+          description: `Se asignó permiso "${permisoName}" al rol ${rolId}`,
+          metadata: { permissionId, permisoName }
+        });
+      }
+    }
+
+    await conn.commit();
+    res.json({ success: true, message: "Permisos guardados correctamente" });
+  } catch (err) {
+    await conn.rollback();
+    console.error("❌ Error guardando permisos por rol:", err);
+
+    // Auditoría de fallo
+    await auditAction({
+      req,
+      actor: { username },
+      action: AUDIT_ACTIONS.PERMISSION_CHANGE,
+      entity: AUDIT_ENTITIES.ROLE,
+      description: "Error al guardar permisos por rol",
+      metadata: { error: err.message }
+    });
+
+    res.json({ success: false, message: err.message });
+  } finally {
+    conn.release();
+  }
+};
+
+exports.loaduser = async (req, res) => {
+  const conn = await pool.getConnection();
+
+  const auditUsername =
+    req.query.userid || req.body?.userid || req.user?.username || "desconocido";
+
+  const requesterRole = req.body?.role || "";
+  const requesterProvince = req.body?.province || "";
+
+  try {
+    // ===============================
+    // 1. QUERY BASE (USUARIOS + ROL)
+    // ===============================
+    let sqlUsers = `
+      SELECT 
+        u.userid, u.userpass, u.useremail, u.userspec, u.fullname, 
+        u.active, u.registeredpend, u.municipality, u.province,
+        ur.rol_id, r.name AS rol_name
+      FROM users u
+      JOIN auxusersrol ur ON ur.userid = u.userid
+      JOIN auxrols r ON r.idr = ur.rol_id
+    `;
+
+    let paramsUsers = [];
+    let conditions = [];
+
+    if (requesterRole === "superv") {
+      conditions.push("u.province = ?");
+      conditions.push("ur.rol_id NOT IN (5,6)");
+      paramsUsers.push(requesterProvince);
+    }
+
+    if (requesterRole === "admin") {
+      conditions.push("ur.rol_id != 6");
+    }
+
+    if (conditions.length > 0) {
+      sqlUsers += " WHERE " + conditions.join(" AND ");
+    }
+
+    const [users] = await conn.execute(sqlUsers, paramsUsers);
+
+    if (users.length === 0) {
+      return res.json({ rows: [] });
+    }
+
+    const userIds = users.map((u) => u.userid);
+
+    // ===============================
+    // 2. PERMISOS POR ROL
+    // ===============================
+    const [permissionsByRole] = await conn.execute(`
+      SELECT rp.rol_id, p.name AS permission_name
+      FROM auxrolspermissions rp
+      JOIN auxpermissions p ON p.idp = rp.permission_id
+    `);
+
+    // ===============================
+    // 3. PERMISOS EXTRA POR USUARIO
+    // ===============================
+    const [permissionsExtra] = await conn.execute(
+      `
+      SELECT ump.userid, p.name AS permission_name
+      FROM auxmoreuserpermissions ump
+      JOIN auxpermissions p ON p.idp = ump.permission_id
+      WHERE ump.userid IN (${userIds.map(() => "?").join(",")})
+    `,
+      userIds
+    );
+
+    // ===============================
+    // 4. MAPAS
+    // ===============================
+    const permsByRol = {};
+    for (const p of permissionsByRole) {
+      if (!permsByRol[p.rol_id]) permsByRol[p.rol_id] = [];
+      permsByRol[p.rol_id].push(p.permission_name);
+    }
+
+    const extraPermsByUser = {};
+    for (const p of permissionsExtra) {
+      if (!extraPermsByUser[p.userid]) extraPermsByUser[p.userid] = [];
+      extraPermsByUser[p.userid].push(p.permission_name);
+    }
+
+    // ===============================
+    // 5. RESULTADO FINAL
+    // ===============================
+    const mappedRows = users.map((u) => {
+      const userPermissionsSet = new Set();
+
+      // permisos por rol
+      const permsRol = permsByRol[u.rol_id] || [];
+      permsRol.forEach((p) => userPermissionsSet.add(p));
+
+      // permisos extra
+      const extraPerms = extraPermsByUser[u.userid] || [];
+      extraPerms.forEach((p) => userPermissionsSet.add(p));
+
+      return {
+        usuario: u.userid,
+        userid: u.userid,
+        password: u.userpass || "",
+        correo: u.useremail || "",
+        especialidad: u.userspec || "",
+        nombre: u.fullname || "",
+        rols: [u.rol_name], // ahora siempre 1
+        permissions: Array.from(userPermissionsSet),
+        activo: u.active === 1 ? "Sí" : "No",
+        aprobado: u.registeredpend === 1 ? "Sí" : "No",
+        cdo: u.municipality || "",
+        provincia: u.province || ""
+      };
+    });
+
+    // ===============================
+    // 6. AUDITORÍA
+    // ===============================
+    await auditAction({
+      req,
+      actor: { username: auditUsername },
+      action: AUDIT_ACTIONS.SELECT,
+      entity: AUDIT_ENTITIES.USERS,
+      entityId: null,
+      description: "Carga de usuarios con filtro por rol/provincia",
+      oldState: null,
+      newState: { total: mappedRows.length }
+    });
+
+    res.json({ rows: mappedRows });
+  } catch (err) {
+    console.error("❌ Error en /api/users/load:", err);
+    res.status(500).json({ error: err.message });
+  } finally {
+    conn.release();
+  }
+};
+
+exports.permisosrol = async (req, res) => {
+  const { roles, username } = req.body;
+
+  if (!roles || !Array.isArray(roles) || roles.length === 0) {
+    return res.status(400).json({ message: "Faltan roles" });
+  }
+
+  const conn = await pool.getConnection();
+
+  try {
+    // Construir placeholders para MySQL: ?, ?, ?, ...
+    const placeholders = roles.map(() => "?").join(",");
+    const sql = `
+      SELECT DISTINCT p.idp, p.name, p.resource, p.tooltip
+      FROM auxpermissions p
+      JOIN auxrolspermissions rp ON p.idp = rp.permission_id
+      JOIN auxrols r ON rp.rol_id = r.idr
+      WHERE r.name IN (${placeholders})
+    `;
+
+    const [permisosResults] = await conn.execute(sql, roles);
+
+    // 🧾 Auditoría usando auditAction
+    await auditAction({
+      req,
+      actor: { username },
+      action: AUDIT_ACTIONS.READ_SENSITIVE,
+      entity: AUDIT_ENTITIES.PERMISSION,
+      description: `Consulta permisos de roles: ${roles.join(", ")}`.substring(
+        0,
+        255
+      ),
+      metadata: {
+        roles,
+        permisos_count: permisosResults.length,
+        permisos: permisosResults.map((p) => p.name)
+      }
+    });
+
+    res.json({
+      roles,
+      permisos: permisosResults.map((p) => p.name)
+    });
+  } catch (err) {
+    console.error("❌ Error obteniendo permisos por rol:", err);
+
+    // Auditoría de error
+    await auditAction({
+      req,
+      actor: { username },
+      action: AUDIT_ACTIONS.READ_SENSITIVE,
+      entity: AUDIT_ENTITIES.PERMISSION,
+      description: "Error al consultar permisos por rol",
+      metadata: { error: err.message, roles }
+    });
+
+    res.status(500).json({ message: "Error interno en el servidor" });
+  } finally {
+    conn.release();
+  }
+};
+
+exports.getpermisosporrol = async (req, res) => {
+  const conn = await pool.getConnection();
+  try {
+    // 2 consultas separadas = 100% confiable
+    const [roles] = await conn.execute(
+      "SELECT idr, name FROM auxrols ORDER BY idr"
+    );
+    const [permisosRaw] = await conn.execute(`
+      SELECT rp.rol_id, r.name AS rol_name, ap.name as permiso_name
+      FROM auxrolspermissions rp
+      JOIN auxrols r ON rp.rol_id = r.idr
+      JOIN auxpermissions ap ON rp.permission_id = ap.idp
+      ORDER BY rp.rol_id, ap.name
+    `);
+
+    // Construir { "user": [...], "admin": [...] }
+    const permisosPorRol = {};
+
+    // Inicializar todos los roles
+    roles.forEach((rol) => {
+      permisosPorRol[rol.name] = [];
+    });
+
+    // Llenar permisos
+    permisosRaw.forEach((row) => {
+      permisosPorRol[row.rol_name].push(row.permiso_name);
+    });
+
+    res.json(permisosPorRol);
+  } catch (err) {
+    console.error("❌ Error en /api/permisos-por-rol:", err);
+    res.status(500).json({ message: "Error interno en el servidor" });
+  } finally {
+    conn.release();
+  }
+};
+
+exports.getpermisosrol = async (req, res) => {
+  const conn = await pool.getConnection();
+  try {
+    // 2 consultas separadas = 100% confiable
+    const [roles] = await conn.execute(
+      "SELECT idr, name FROM auxrols ORDER BY idr"
+    );
+    const [permisosRaw] = await conn.execute(`
+      SELECT rp.rol_id, r.name AS rol_name, ap.name as permiso_name
+      FROM auxrolspermissions rp
+      JOIN auxrols r ON rp.rol_id = r.idr
+      JOIN auxpermissions ap ON rp.permission_id = ap.idp
+      ORDER BY rp.rol_id, ap.name
+    `);
+
+    // Construir { "user": [...], "admin": [...] }
+    const permisosPorRol = {};
+
+    // Inicializar todos los roles
+    roles.forEach((rol) => {
+      permisosPorRol[rol.name] = [];
+    });
+
+    // Llenar permisos
+    permisosRaw.forEach((row) => {
+      permisosPorRol[row.rol_name].push(row.permiso_name);
+    });
+
+    res.json(permisosPorRol);
+  } catch (err) {
+    console.error("❌ Error en /api/permisos-por-rol:", err);
+    res.status(500).json({ message: "Error interno en el servidor" });
+  } finally {
+    conn.release();
+  }
+};
+
+exports.approve = async (req, res) => {
+  const { userid, rolId } = req.body;
+
+  if (!userid || !rolId) {
+    return res.status(400).json({
+      error: "userid y rolId son requeridos"
+    });
+  }
+
+  const conn = await pool.getConnection();
+
+  try {
+    await conn.beginTransaction();
+
+    // 1️⃣ Activar usuario
+    const [updateUser] = await conn.execute(
+      `
+      UPDATE users
+      SET active = 1,
+          registeredpend = 0
+      WHERE userid = ?
+    `,
+      [userid]
+    );
+
+    if (updateUser.affectedRows === 0) {
+      throw new Error("Usuario no encontrado");
+    }
+
+    // 2️⃣ Verificar si ya tiene rol
+    const [existing] = await conn.execute(
+      `
+      SELECT *
+      FROM auxusersrol
+      WHERE userid = ?
+    `,
+      [userid]
+    );
+
+    if (existing.length > 0) {
+      // 3️⃣ Actualizar rol existente
+      await conn.execute(
+        `
+        UPDATE auxusersrol
+        SET rol_id = ?
+        WHERE userid = ?
+      `,
+        [rolId, userid]
+      );
+    } else {
+      // 4️⃣ Insertar nuevo rol
+      await conn.execute(
+        `
+        INSERT INTO auxusersrol (userid, rol_id)
+        VALUES (?, ?)
+      `,
+        [userid, rolId]
+      );
+    }
+
+    await conn.commit();
+
+    return res.json({
+      success: true,
+      message: "Usuario aprobado correctamente"
+    });
+  } catch (err) {
+    await conn.rollback();
+
+    console.error("❌ Error en approve:", err);
+
+    return res.status(500).json({
+      error: err.message
+    });
+  } finally {
+    conn.release();
+  }
+};

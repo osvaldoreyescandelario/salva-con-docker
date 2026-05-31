@@ -1,0 +1,212 @@
+const express = require("express");
+const router = express.Router();
+const statsController = require("../controllers/statsController");
+
+router.post("/api/stats/mgivar-mrrp44", statsController.mgivarmrrp44);
+router.post(
+  "/api/stats/mgivar-cage-average",
+  statsController.mgivarcageaverage
+);
+router.post(
+  "/api/stats/estudios-por-sujeto",
+  statsController.estudiosporsujeto
+);
+router.post("/api/stats/edulevel-counts", statsController.edulevelcounts);
+router.post("/api/stats/sex-counts", statsController.sexcounts);
+router.post("/api/stats/skincolor-counts", statsController.skincolorcounts);
+router.post(
+  "/api/stats/edulevel-counts-prov-mun",
+  statsController.edulevelcountsprovmun
+);
+router.post(
+  "/api/stats/edulevel-by-province",
+  statsController.edulevelbyprovince
+);
+
+router.post(
+  "/api/stats/edulevel-by-municipality",
+  statsController.edulevelbymunicipality
+);
+router.post(
+  "/api/stats/edulevel-age-prov-mun",
+  statsController.edulevelageprovmun
+);
+router.post(
+  "/api/stats/edulevel-age-by-municipality",
+  statsController.edulevelagebymunicipality
+);
+router.post(
+  "/api/stats/edulevel-age-by-province",
+  statsController.edulevelagebyprovince
+);
+router.post("/api/stats/total-sex-prov-mun", statsController.totalsexprovmun);
+router.post(
+  "/api/stats/total-sex-by-municipality",
+  statsController.totalsexbymunicipality
+);
+router.post(
+  "/api/stats/total-sex-by-province",
+  statsController.totalsexbyprovince
+);
+router.post(
+  "/api/stats/total-skincolor-prov-mun",
+  statsController.totalskincolorprovmun
+);
+router.post(
+  "/api/stats/total-skincolor-by-municipality",
+  statsController.totalskincolorbymunicipality
+);
+router.post(
+  "/api/stats/total-skincolor-by-province",
+  statsController.totalskincolorbyprovince
+);
+router.post(
+  "/api/stats/zone-counts-prov-mun",
+  statsController.zonecountsprovmun
+);
+router.post(
+  "/api/stats/zone-by-municipality",
+  statsController.zonebymunicipality
+);
+router.post("/api/stats/zone-by-province", statsController.zonebyprovince);
+router.post(
+  "/api/stats/economic-situation-prov-mun",
+  statsController.economicsituationprovmun
+);
+router.post(
+  "/api/stats/economic-situation-by-municipality",
+  statsController.economicsituationbymunicipality
+);
+router.post(
+  "/api/stats/economic-situation-by-province",
+  statsController.economicsituationbyprovince
+);
+router.post(
+  "/api/stats/field-level-prov-mun",
+  statsController.fieldlevelprovmun
+);
+router.post(
+  "/api/stats/field-level-by-municipality",
+  statsController.fieldlevelbymunicipality
+);
+router.post(
+  "/api/stats/field-level-by-province",
+  statsController.fieldlevelbyprovince
+);
+router.post(
+  "/api/stats/teacher-training-prov-mun",
+  statsController.teachertrainingprovmun
+);
+router.post(
+  "/api/stats/teacher-training-by-municipality",
+  statsController.teachertrainingbymunicipality
+);
+router.post(
+  "/api/stats/teacher-training-by-province",
+  statsController.teachertrainingbyprovince
+);
+router.get(
+  "/api/specialists-by-province-municipality/:province/:municipality",
+  statsController.specialistsbyprovincemunicipality
+);
+router.get(
+  "/api/specialists-by-province/:province",
+  statsController.specialistsbyprovince
+);
+router.get(
+  "/api/casos-mgivar-by-province-municipality/:province/:municipality",
+  statsController.casosmgivarbyprovincemunicipality
+);
+router.get(
+  "/api/casos-mgivar-by-province/:province",
+  statsController.casosmgivarbyprovince
+);
+router.get(
+  "/api/mgivar-top-nivel-educativo/:province/:municipality",
+  statsController.mgivartopniveleducativo
+);
+router.get(
+  "/api/mgivar-top-nivel-educativo-provincia/:province",
+  statsController.mgivartopniveleducativoprovincia
+);
+router.get(
+  "/api/casos-mrrp44-mgivar-by-province-municipality/:province/:municipality",
+  statsController.casosmrrp44mgivarbyprovincemunicipality
+);
+router.get(
+  "/api/casos-mrrp44-mgivar-by-province/:province",
+  statsController.casosmrrp44mgivarbyprovince
+);
+router.post(
+  "/api/stats-funnel-me31-sin-me34",
+  statsController.statsfunnelme31sinme34
+);
+router.post("/api/stats-me34-sin-mrrp41", statsController.statsme34sinmrrp41);
+router.post(
+  "/api/stats-mrrp41-sin-mrrp44",
+  statsController.statsmrrp41sinmrrp44
+);
+router.post("/api/stats-mrrp44", statsController.statsmrrp44);
+router.post(
+  "/api/stats-duracion-me34-mgivar",
+  statsController.statsduracionme34mgivar
+);
+router.post(
+  "/api/stats-duracion-mrrp44-mrrp41",
+  statsController.statsduracionmrrp44mrrp41
+);
+
+router.get(
+  "/api/specialists-by-province-municipality",
+  statsController.specialistsbyprovincemunicipality
+);
+router.get(
+  "/api/specialists-by-province",
+  statsController.specialistsbyprovince
+);
+router.get(
+  "/api/casos-mgivar-by-province-municipality",
+  statsController.casosmgivarbyprovincemunicipality
+);
+router.get(
+  "/api/casos-mgivar-by-province",
+  statsController.casosmgivarbyprovince
+);
+router.get(
+  "/api/mgivar-top-nivel-educativo",
+  statsController.mgivartopniveleducativo
+);
+router.get(
+  "/api/mgivar-top-nivel-educativo-provincia",
+  statsController.mgivartopniveleducativoprovincia
+);
+router.get(
+  "/api/casos-mrrp44-mgivar-by-province-municipality",
+  statsController.casosmrrp44mgivarbyprovincemunicipality
+);
+router.get(
+  "/api/casos-mrrp44-mgivar-by-province",
+  statsController.casosmrrp44mgivarbyprovince
+);
+router.post(
+  "/api/stats-funnel-me31-sin-me34",
+  statsController.statsfunnelme31sinme34
+);
+router.post("/api/stats-me34-sin-mrrp41", statsController.statsme34sinmrrp41);
+router.post(
+  "/api/stats-mrrp41-sin-mrrp44",
+  statsController.statsmrrp41sinmrrp44
+);
+router.post("/api/stats-mrrp44", statsController.statsmrrp44);
+router.post(
+  "/api/stats-duracion-me34-mgivar",
+  statsController.statsduracionme34mgivar
+);
+router.post(
+  "/api/stats-duracion-mrrp44-mrrp41",
+  statsController.statsduracionmrrp44mrrp41
+);
+router.post("/api/mgivar/username-stats", statsController.mgivarusernamestats);
+router.post("/api/mrrp44/username-stats", statsController.mrrp44usernamestats);
+
+module.exports = router;

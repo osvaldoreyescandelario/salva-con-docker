@@ -1,0 +1,33 @@
+name: Build and Push to GHCR
+
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build backend
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/saidicdo-backend:latest ./backend
+          docker push ghcr.io/${{ github.repository_owner }}/saidicdo-backend:latest
+
+      - name: Build frontend
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/saidicdo-frontend:latest ./frontend
+          docker push ghcr.io/${{ github.repository_owner }}/saidicdo-frontend:latest

@@ -1,0 +1,206 @@
+/* Estilo del botón principal */
+.open-modal-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 16px 40px;
+  font-size: 1.4em;
+  background-color: teal;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.open-modal-btn:hover {
+  background-color: #008b8b;
+}
+
+/* Modal a pantalla completa */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Contenido del modal */
+.modal-content {
+  text-align: center;
+  color: white;
+  max-width: 800px;
+  padding: 30px;
+  background: rgba(0,0,0,0);
+}
+
+/* Título principal */
+.modal-content h1 {
+  font-size: 3em;
+  margin-bottom: 20px;
+}
+
+/* Texto descriptivo */
+.modal-content .description {
+  font-size: 1.5em;
+  line-height: 1.6em;
+  margin-bottom: 30px;
+}
+
+/* Botones del modal */
+.modal-content button {
+  padding: 12px 30px;
+  font-size: 1.2em;
+  background-color: chocolate;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.modal-content button:hover {
+  background-color: #e68a00;
+}
+
+/* Imagen centrada en modo prueba */
+#test-image {
+  width: 120%;
+  height: auto;
+  border-radius: 10px;
+  transform: scale(1.5);
+  transform-origin: center;
+}
+
+/* Contador en esquina inferior derecha */
+#countdown {
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  font-size: 1.8em;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-family: monospace;
+  z-index: 10000;
+}
+
+/* tabla evaluacion */
+/* Fondo del modal */
+.tabc-modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+}
+
+/* Contenedor del contenido */
+.tabc-modal-content {
+  background-color: white;
+  color: black;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  max-width: 900px;
+  width: 90%;
+}
+
+/* Título */
+.tabc-modal-content h2 {
+  margin-bottom: 20px;
+  font-size: 1.8em;
+  letter-spacing: 3px;
+}
+
+/* Tabla */
+#tabc-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+#tabc-table th,
+#tabc-table td {
+  border: 1px solid #ccc;
+  text-align: center;
+  padding: 10px;
+  width: 10%;
+  cursor: pointer;
+}
+
+#tabc-table th:first-child,
+#tabc-table td:first-child {
+  background-color: #f4f4f4;
+  font-weight: bold;
+  cursor: default;
+}
+
+/* Estilo al hacer clic */
+#tabc-table td.tabc-selected {
+  background-color: #2ecc71;
+  color: white;
+  font-weight: bold;
+}
+
+/* Botón Aceptar */
+#tabc-accept-btn {
+  padding: 10px 25px;
+  background-color: chocolate;
+  color: white;
+  font-size: 1.2em;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 10px;
+}
+
+#tabc-accept-btn:hover {
+  background-color: #d97a00;
+}
+
+/* === TOOLTIP ESTILOS === */
+.tabc-tooltip {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 10000;
+  transform: translate(-50%, -120%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.tabla-resultados {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.tabla-resultados th {
+  background-color: darkcyan;
+  color: white;
+  text-align: center;
+  padding: 8px;
+}
+
+.tabla-resultados td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}

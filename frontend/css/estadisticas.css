@@ -1,0 +1,96 @@
+/* ===== ENCABEZADO DEL MODAL ===== */
+#estad-modal .modal-header {
+  background-color: white;
+  text-align: center;
+  border-bottom: none;
+}
+#estad-modal .modal-title {
+  color: chocolate;
+  font-weight: bold;
+  font-size: 26px;
+  text-align: center;
+}
+
+/* ===== TÍTULO DE CADA TABLA ===== */
+.estad-table-title {
+  background-color: chocolate;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  padding: 6px 0;
+  border-radius: 4px 4px 0 0;
+  margin-bottom: 4px;
+}
+
+/* ===== TABLAS ===== */
+.estad-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+}
+.estad-table td {
+  padding: 6px;
+  border: 1px solid #ddd;
+  text-align: left;
+  vertical-align: middle;
+}
+
+/* ===== CONTENEDOR ===== */
+.estad-table-container {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+/* ===== BOTONES ===== */
+#estad-modal .estad-btn {
+  background-color: chocolate;
+  color: white;
+  font-weight: bold;
+  border: 1px solid chocolate;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  padding: 6px 16px;
+}
+#estad-modal .estad-btn:hover {
+  opacity: 0.9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== PIE ===== */
+#estad-modal .modal-footer {
+  justify-content: flex-end;
+}
+
+.std-section:empty::before {
+  content: "Selecciona una opción...";
+  display: block;
+  text-align: center;
+  padding: 100px 20px;
+  color: #999;
+}
+
+.std-sidebar-item ul {
+  margin-left: 20px;
+  display: none;
+}
+
+.std-sidebar-item.active ul {
+  display: block;
+}
+
+.std-sidebar-sublist {
+  display: none;
+  margin-left: 15px;
+  padding-left: 10px;
+  border-left: 2px solid #ddd;
+}
+
+.std-sidebar-group.open .std-sidebar-sublist,
+.std-sidebar-group-item.open .std-sidebar-sublist {
+  display: block !important;
+}
+
+.std-sidebar-group-item {
+  list-style: none;
+}

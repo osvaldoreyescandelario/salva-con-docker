@@ -1,0 +1,10 @@
+node_modules/
+docker-images/
+DOC/
+.scannerwork/
+
+backend/node_modules/
+frontend/node_modules/
+
+.env
+*.log

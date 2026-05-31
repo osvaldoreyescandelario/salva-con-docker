@@ -1,0 +1,185 @@
+/* Modal header */
+.mrrp-modal-header {
+  justify-content: center;
+  color: black;
+  border-bottom: none;
+}
+
+/* Fondo del modal */
+#mrrp-formModal .modal-content {
+  background-image: url('../images/mRRP.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: black;
+  border-radius: 10px;
+}
+
+/* Título y subtítulo */
+.mrrp-modal-title {
+  font-weight: 700;
+  color: black;
+}
+
+.mrrp-modal-subtitle {
+  font-size: 22px;
+  font-weight: 500;
+  color: rgb(80, 80, 80);
+  margin-top: 4px;
+}
+
+/* Fondo de los controles */
+#mrrp-formModal .form-control,
+#mrrp-formModal select,
+#mrrp-formModal textarea {
+  background-color: transparent;
+  color: black;
+  border: 1px solid rgb(233, 179, 141);
+  border-radius: 8px;
+}
+
+#mrrp-formModal ::placeholder {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+/* Botones */
+#mrrp-formModal .btn {
+  background-color: chocolate;
+  color: white;
+  font-weight: bold;
+  border: 1px solid chocolate;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+#mrrp-formModal .btn:hover {
+  opacity: 0.9;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Etiquetas */
+label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Subtítulos de secciones */
+.mrrp-section-title {
+  font-weight: bold;
+  font-size: 16px;
+  color: chocolate;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  text-decoration: underline;
+  text-align: center;
+}
+
+/* Ajustes de campos */
+.form-control {
+  height: auto;
+  padding: .5rem .75rem;
+  font-size: 13px;
+}
+
+/* Responsive */
+@media (max-width: 767.98px) {
+  .form-row .form-group {
+    margin-bottom: 1rem;
+  }
+  .mrrp-section-title {
+    text-align: center;
+  }
+}
+
+/* BOTON PARA ABRIR FORMULARIO */
+.mrrp-open-btn {
+  background-color: chocolate;
+  border: 1px solid chocolate;
+  border-radius: 8px;
+  font-weight: bold;
+  padding: 8px 18px;
+  transition: all 0.2s ease-in-out;
+}
+
+.mrrp-open-btn:hover {
+  opacity: 0.9;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Paginación estilo DataTables */
+.mrrp-pagination .page-link {
+  color: chocolate;
+  border: 1px solid chocolate;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.mrrp-pagination .page-item.active .page-link {
+  background-color: chocolate;
+  color: #fff;
+  border-color: chocolate;
+}
+
+.mrrp-pagination .page-item.disabled .page-link {
+  opacity: 0.5;
+}
+
+/* Separación paginación del contenido */
+.mrrp-pagination {
+  margin-top: 10px;
+}
+
+.mrrp-pedagogia-table th,
+.mrrp-pedagogia-table td {
+  font-size: 10pt;
+  vertical-align: middle;
+}
+
+.mrrp-pedagogia-table thead th {
+  background-color: chocolate;
+  color: #ffffff;
+  font-weight: bold;
+  text-align: center;
+}
+
+.mrrp-pedagogia-table td:first-child {
+  text-align: center;
+  font-weight: bold;
+  background-color: #f8f9fa;
+}
+
+.mrrp-pedagogia-table textarea {
+  width: 100%;
+  min-height: 45px;
+  border: none;
+  resize: vertical;
+  font-size: 10pt;
+  padding: 4px;
+}
+
+.mrrp-pedagogia-table textarea:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* AUMENTAR ANCHO DEL MODAL MRRP */
+#mrrp-formModal .modal-dialog {
+  max-width: 95vw;   /* usa casi todo el ancho de la ventana */
+}
+
+/* En pantallas muy grandes, limitar un poco */
+@media (min-width: 1400px) {
+  #mrrp-formModal .modal-dialog {
+    max-width: 1350px;
+  }
+}
+
+/* BOTÓN GUARDAR DESHABILITADO */
+#mrrp-guardarBtn:disabled {
+  background-color: beige !important;
+  border-color: #cfcfcf !important;
+  color: #666 !important;
+  cursor: not-allowed;
+  opacity: 0.8;
+  box-shadow: none;
+}

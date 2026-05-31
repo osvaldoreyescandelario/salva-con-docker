@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modal Test ABC</title>
+  <link rel="stylesheet" href="../css/tests/tabc.css">
+</head>
+<body>
+
+  <!-- Botón que abre el modal -->
+  <button id="open-modal-btn" class="open-modal-btn">Comenzar Test ABC</button>
+
+  <!-- Modal (inicialmente oculto) -->
+  <div id="fullscreen-modal" class="modal" style="display: none;">
+    <div class="modal-content" id="modal-content">
+      <h1>Test ABC</h1>
+      <p class="description">
+        Evaluación que se emplea para determinar la madurez de los niños y cómo esta influye en su capacidad de aprendizaje de lectura y escritura, lo que es importante ya que los resultados podrán ser utilizados para predecir el tiempo que se tomarán los menores para aprender dichas habilidades.
+        <br><br>
+        El Test ABC se compone de 8 subtest. El evaluador debe aplicar estos 8 test de forma íntegra, y luego sumar sus puntuaciones, para obtener un puntaje general de la prueba.
+      </p>
+      <button id="start-btn">Comenzar</button>
+    </div>
+  </div>
+
+  <!-- Botón para abrir el modal -->
+  <button id="tabc-open-modal">Abrir Resumen</button>
+
+  <!-- Modal -->
+  <div id="tabc-modal" class="tabc-modal">
+    <div class="tabc-modal-content">
+      <h2>R E S U M E N  &nbsp; Y &nbsp;  P E R F I L</h2>
+
+      <table id="tabc-table">
+        <thead>
+          <tr>
+            <th>Test</th>
+            <th>1</th>
+            <th>2</th>
+            <th>3</th>
+            <th>4</th>
+            <th>5</th>
+            <th>6</th>
+            <th>7</th>
+            <th>8</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Calificación 3</td>
+            <td></td><td></td><td></td><td></td>
+            <td></td><td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td>Calificación 2</td>
+            <td></td><td></td><td></td><td></td>
+            <td></td><td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td>Calificación 1</td>
+            <td></td><td></td><td></td><td></td>
+            <td></td><td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td>Calificación 0</td>
+            <td></td><td></td><td></td><td></td>
+            <td></td><td></td><td></td><td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table id="tabla-resultados" class="tabla-resultados">
+        <tr>
+          <th>Puntuación total</th>
+          <th>Interpretación</th>
+          <th>Cuartil</th>
+        </tr>
+        <tr>
+          <td id="res-total"></td>
+          <td id="res-interp"></td>
+          <td id="res-cuartil"></td>
+        </tr>
+      </table>
+
+
+      <button id="tabc-accept-btn">Aceptar</button>
+    </div>
+  </div>
+
+  <script src="../js/tests/tabc.js"></script>
+</body>
+</html>

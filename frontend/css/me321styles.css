@@ -1,0 +1,93 @@
+/* ==========================
+   Estilos del Modal me321
+   ========================== */
+/* .me321-modal .modal-title {} */
+
+/* Encabezado del modal */
+.me321-modal-header {
+  justify-content: center;
+  color: black;
+  border-bottom: none;
+}
+
+.me321-modal-title {
+  font-weight: 700;
+}
+
+/* Fondo del modal (puedes cambiar la imagen) */
+#me321-formModal .modal-content {
+  background-image: url('../images/me.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: black;
+}
+
+/* Controles de formulario */
+#me321-formModal .form-control,
+#me321-formModal select,
+#me321-formModal textarea {
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgb(233, 179, 141);
+  border-radius: 8px;
+  color: black;
+}
+
+/* Ajuste general de los inputs */
+.form-control {
+  height: calc(1.8em + .75rem + 2px);
+  padding: .4rem .75rem;
+  font-size: 13px;
+}
+
+/* Botones */
+#me321-formModal .btn {
+  background-color: chocolate;
+  color: white;
+  font-weight: bold;
+  border: 1px solid chocolate;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+#me321-formModal .btn:hover {
+  opacity: 0.9;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Radio buttons inline spacing */
+.form-check-inline .form-check-input {
+  margin-left: 0;
+  margin-right: .35rem;
+}
+
+/* Dropdown item font-size smaller */
+#me321-abortosTiposBtn + .dropdown-menu div,
+#me321-tipoPartoBtn + .dropdown-menu div,
+#me321-abortosTiposBtn ~ .dropdown-menu .form-check,
+#me321-tipoPartoBtn ~ .dropdown-menu .form-check {
+  font-size: 12px;
+}
+
+/* Estilo para los dropdown buttons dentro de me321-dropdown */
+.me321-dropdown > .btn {
+  background-color: transparent !important;
+  color: #000 !important;
+  font-size: 12px !important;
+  font-weight: normal !important;
+  border: 1px solid #ccc;
+  text-align: left;
+  padding-left: .75rem;
+}
+
+/* Hover */
+.me321-dropdown > .btn:hover {
+  background-color: #e2e6ea;
+}
+
+/* Ajuste responsive */
+@media (max-width: 767.98px) {
+  .form-row .form-group {
+    margin-bottom: .9rem;
+  }
+}

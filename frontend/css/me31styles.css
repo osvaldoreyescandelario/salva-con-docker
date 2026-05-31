@@ -1,0 +1,108 @@
+/* ==========================
+   Estilos del Modal me31
+   ========================== */
+.me31-modal .modal-title
+
+/* ******************* */
+
+/* Encabezado del modal */
+.me31-modal-header {
+  justify-content: center;
+  color: black;
+  border-bottom: none;
+}
+
+.me31-modal-title {
+  font-weight: 700;
+}
+
+/* Fondo del modal */
+#me31-formModal .modal-content {
+  background-image: url('../images/me.jpg'); /* Imagen de fondo */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: black;
+}
+
+/* Controles de formulario */
+#me31-formModal .form-control,
+#me31-formModal select,
+#me31-formModal textarea {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgb(233, 179, 141);
+  border-radius: 8px;
+  color: black;
+}
+
+/* Ajuste general de los inputs */
+.form-control {
+  height: calc(1.8em + .75rem + 2px);
+  padding: .4rem .75rem;
+  font-size: 13px;
+}
+
+/* Botones */
+#me31-formModal .btn {
+  background-color: chocolate;
+  color: white;
+  font-weight: bold;
+  border: 1px solid chocolate;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+#me31-formModal .btn:hover {
+  opacity: 0.9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Radio buttons */
+.form-check-inline .form-check-input {
+  margin-left: 0;
+  margin-right: .35rem;
+}
+
+/* Responsive en pantallas pequeñas */
+@media (max-width: 767.98px) {
+  .form-row .form-group {
+    margin-bottom: .9rem;
+  }
+}
+
+/* Cambiar el tamaño de letra de los items dentro del dropdown */
+#me31-motivoAtencionBtn + .dropdown-menu div,
+#me31-tratamientoBtn + .dropdown-menu div {
+    font-size: 10px; /* Ajusta el tamaño deseado */
+}
+
+/* Solo para los botones de dropdown dentro de me31-dropdown */
+.me31-dropdown > .btn {
+    background-color: transparent !important; /* fondo claro */
+    color: #000 !important; /* texto negro */
+    font-size: 12px !important;
+    font-weight: normal !important;
+    border: 1px solid #ccc; /* borde gris */
+}
+
+/* Opcional: hover */
+.me31-dropdown > .btn:hover {
+    background-color: #e2e6ea;
+}
+
+/* ************** */
+#me31-formModal .dropdown-menu select[multiple] {
+  height: 200px;  /* ajusta altura */
+  font-size: 13px;
+}
+
+.form-check-inline {
+  display: flex;
+  align-items: center;
+}
+
+.form-check-inline .form-check-input {
+  margin-left: 20px !important;
+  margin-top: 0;
+  margin-bottom: 0;
+}

@@ -1,0 +1,505 @@
+/* DIALOGO LOGIN/REGISTER */
+
+* {
+	box-sizing: border-box;
+}
+
+
+/* wrapper oculto por defecto */
+#cc-container-wrapper {
+  position: fixed;
+  inset: 0;
+  display: none;                    /* oculto por defecto */
+  justify-content: center;
+  align-items: center;
+  z-index: 9998;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+#cc-container-wrapper.open {
+  display: flex !important;                     /* se muestra como flex al abrir */
+}
+
+
+
+
+#cc-container * {
+	box-sizing: border-box;
+}
+
+#cc-container h1 {
+	font-weight: bold;
+	margin: 0;
+    font-size: 20px;
+}
+
+#cc-container h2 {
+	text-align: center;
+}
+
+#cc-container p {
+	font-size: 14px;
+	font-weight: 100;
+	line-height: 20px;
+	letter-spacing: 0.5px;
+	margin: 20px 0 30px;
+}
+
+#cc-container span {
+	font-size: 12px;
+}
+
+#cc-container a {
+	color: #333;
+	font-size: 14px;
+	text-decoration: none;
+	margin: 15px 0;
+}
+
+#cc-container button,
+#cc-container .cc-button {
+	border-radius: 20px;
+	border: 1px solid rgb(39, 93, 93);
+	background-color: rgb(39, 93, 93);
+	color: #FFFFFF;
+	font-size: 12px;
+	font-weight: bold;
+	padding: 12px 45px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	transition: transform 80ms ease-in;
+}
+
+#cc-container button:active,
+#cc-container .cc-button:active {
+	transform: scale(0.95);
+}
+
+#cc-container button:focus,
+#cc-container .cc-button:focus {
+	outline: none;
+}
+
+#cc-container button.cc-ghost,
+#cc-container .cc-button.cc-ghost {
+	background-color: transparent;
+	border-color: #FFFFFF;
+}
+
+#cc-container form {
+	background-color: #FFFFFF;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	padding: 0 30px;
+	height: 100%;
+	text-align: center;
+}
+
+#cc-container input {
+	background-color: #eee;
+	border: none;
+	padding: 12px 15px;
+	margin: 8px 0;
+	width: 100%;
+	font-size: 12px;
+}
+
+.cc-container {
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
+		0 10px 10px rgba(0,0,0,0.22);
+	position: relative;
+	overflow: hidden;
+	width: 600px; /* antes era 768px */
+	max-width: 90%;
+	min-height: 400px; /* antes era 480px */
+}
+
+.cc-form-container {
+	position: absolute;
+	top: 0;
+	height: 100%;
+	transition: all 0.6s ease-in-out;
+}
+
+.cc-sign-in-container {
+	left: 0;
+	width: 50%;
+	z-index: 2;
+}
+
+.cc-container.cc-right-panel-active .cc-sign-in-container {
+	transform: translateX(100%);
+}
+
+.cc-sign-up-container {
+	left: 0;
+	width: 50%;
+	opacity: 0;
+	z-index: 1;
+}
+
+.cc-container.cc-right-panel-active .cc-sign-up-container {
+	transform: translateX(100%);
+	opacity: 1;
+	z-index: 5;
+	animation: cc-show 0.6s;
+}
+
+@keyframes cc-show {
+	0%, 49.99% {
+		opacity: 0;
+		z-index: 1;
+	}
+	
+	50%, 100% {
+		opacity: 1;
+		z-index: 5;
+	}
+}
+
+.cc-overlay-container {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	width: 50%;
+	height: 100%;
+	overflow: hidden;
+	transition: transform 0.6s ease-in-out;
+	z-index: 100;
+}
+
+.cc-container.cc-right-panel-active .cc-overlay-container{
+	transform: translateX(-100%);
+}
+
+.cc-overlay {
+    background: rgb(39, 93, 93);
+	background: -webkit-linear-gradient(to right, rgb(39, 93, 93), rgb(39, 93, 93));
+	background: linear-gradient(to right, rgb(39, 93, 93), rgb(39, 93, 93));
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: 0 0;
+	color: #FFFFFF;
+	position: relative;
+	left: -100%;
+	height: 100%;
+	width: 200%;
+  	transform: translateX(0);
+	transition: transform 0.6s ease-in-out;
+}
+
+.cc-container.cc-right-panel-active .cc-overlay {
+  	transform: translateX(50%);
+}
+
+.cc-overlay-panel {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	padding: 0 40px;
+	text-align: center;
+	top: 0;
+	height: 100%;
+	width: 50%;
+	transform: translateX(0);
+	transition: transform 0.6s ease-in-out;
+}
+
+.cc-overlay-left {
+	transform: translateX(-20%);
+}
+
+.cc-container.cc-right-panel-active .cc-overlay-left {
+	transform: translateX(0);
+}
+
+.cc-overlay-right {
+	right: 0;
+	transform: translateX(0);
+}
+
+.cc-container.cc-right-panel-active .cc-overlay-right {
+	transform: translateX(20%);
+}
+
+#cc-rsignUp:disabled,
+#cc-login:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Modal: fondo oscuro */
+.ccrc-modal {
+  display: none; /* Oculto por defecto */
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5); /* semi-transparente */
+  /* display: flex; */
+  justify-content: center;
+  align-items: center;
+}
+
+/* Contenido modal: estilo igual a ccrc-cc-sign-in-container */
+.ccrc-modal-content {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
+              0 10px 10px rgba(0,0,0,0.22);
+  width: 400px;
+  max-width: 90%;
+  padding: 40px 30px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Reutilizando estilos similares */
+.ccrc-modal-content h1 {
+  font-weight: bold;
+  font-size: 22px;
+  margin: 0 0 20px 0;
+}
+
+.ccrc-modal-content input {
+  background-color: #eee;
+  border: none;
+  padding: 12px 15px;
+  margin: 8px 0;
+  width: 100%;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+.ccrc-modal-content button {
+  border-radius: 20px;
+  border: 1px solid rgb(39, 93, 93);
+  background-color: rgb(39, 93, 93);
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 12px 45px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: transform 80ms ease-in;
+}
+
+.ccrc-modal-content button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ccrc-modal-content button:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.ccrc-modal-content button:focus {
+  outline: none;
+}
+
+#cc-container select {
+    background-color: #eee;
+    border: none;
+    padding: 12px 15px;
+    margin: 8px 0;
+    width: 100%;
+    font-size: 12px;
+    color: #555;
+}
+
+/* ========== DIALOGO NEWPASS ========== */
+.newpass-modal {
+  display: none; /* oculto por defecto */
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.newpass-modal.open {
+  display: flex;
+}
+
+.newpass-modal-content {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25),
+              0 10px 10px rgba(0,0,0,0.22);
+  width: 400px;
+  max-width: 90%;
+  padding: 40px 30px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.newpass-modal-content h1 {
+  font-weight: bold;
+  font-size: 22px;
+  margin: 0 0 20px 0;
+}
+
+.newpass-modal-content h2 {
+  font-weight: bold;
+  font-size: 10px;
+  color: red;
+  margin: 0 0 20px 0;
+}
+
+.newpass-modal-content input {
+  background-color: #eee;
+  border: none;
+  padding: 12px 15px;
+  margin: 8px 0;
+  width: 100%;
+  font-size: 14px;
+  border-radius: 4px;
+}
+
+.newpass-modal-content button {
+  border-radius: 20px;
+  border: 1px solid rgb(39, 93, 93);
+  background-color: rgb(39, 93, 93);
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 12px 45px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 15px;
+  cursor: pointer;
+  transition: transform 80ms ease-in;
+}
+
+.newpass-modal-content button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.newpass-modal-content button:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.newpass-modal-content button:focus {
+  outline: none;
+}
+
+.newpass-close {
+  background-color: transparent;
+  border: 1px solid #aaa;
+  color: #555;
+  margin-top: 10px;
+}
+
+/* nuevo password visible */
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-group input {
+  width: 100%;
+  padding-right: 30px; /* espacio para el icono */
+}
+
+.toggle-password {
+  position: absolute;
+  right: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+  user-select: none;
+}
+
+.toggle-password:hover {
+  color: #000;
+}
+
+/* NEW */
+.input-group {
+  width: 100%;
+  margin: 8px 0; /* igual que los inputs normales */
+}
+
+.input-group input {
+  background-color: #eee;
+  border: none;
+  padding: 12px 15px;
+  padding-right: 30px; /* deja espacio para el icono */
+  width: 100%;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+.input-group .toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+}
+
+#cc-rsignUp:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Contenedor de formulario con scroll vertical */
+.cc-sign-up-container form {
+    max-height: 90vh; /* ocupa hasta el 90% de la altura de la ventana */
+    overflow-y: auto; /* scroll vertical si excede */
+    padding-right: 10px; /* espacio para scroll */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Opcional: ajustar inputs y selects para que se vean bien */
+.cc-sign-up-container input,
+.cc-sign-up-container select,
+.cc-sign-up-container .input-group {
+    margin-bottom: 12px;
+}
+
+/* Aumentar altura mínima del contenedor principal */
+.cc-container {
+    min-height: 600px; /* antes era 400px */
+}
+
+/* Para que el formulario de registro tenga scroll si excede la ventana */
+.cc-sign-up-container form {
+    max-height: 80vh; /* ocupa hasta el 80% de la altura de la ventana */
+    overflow-y: auto; /* scroll vertical si excede */
+    padding-right: 10px; /* espacio para scroll */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Ajuste de inputs y selects dentro del registro */
+.cc-sign-up-container input,
+.cc-sign-up-container select,
+.cc-sign-up-container .input-group {
+    margin-bottom: 12px;
+}

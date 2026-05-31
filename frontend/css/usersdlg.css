@@ -1,0 +1,348 @@
+/* =========================================================
+   OVERLAY Y CONTENEDOR PRINCIPAL
+========================================================= */
+.user-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+.user-modal-overlay.hidden {
+  display: none;
+}
+
+.user-modal {
+  background: #fff;
+  width: 95%;
+  max-width: 1400px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* =========================================================
+   CABECERA estilo .rolmodal-header
+========================================================= */
+.user-modal-header {
+  background: #2c3e50;
+  color: white;
+  padding: 20px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #1f2d3a;
+}
+
+.user-modal-header h2 {
+  margin: 0;
+  font-size: 16px;
+  letter-spacing: 0.3px;
+}
+
+/* =========================================================
+   CUERPO Y FOOTER
+========================================================= */
+.user-modal-body {
+  flex: 1;
+  padding: 16px;
+  overflow: auto;
+  background: #fafafa;
+}
+
+.user-modal-footer {
+  padding: 16px 25px;
+  background: #f8f9fa;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+/* =========================================================
+   BOTONES
+========================================================= */
+.user-btn, #user-btn-save, #user-btn-close {
+  padding: 10px 22px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  font-size: 14px;
+}
+
+#user-btn-save {
+  background: #2c3e50;
+  color: white;
+}
+
+#user-btn-save:hover:not(:disabled) {
+  background: #34495e;
+}
+
+#user-btn-save:disabled {
+  background: #66717b !important;
+  color: #bdc3c7 !important;
+  cursor: not-allowed !important;
+}
+
+#user-btn-close {
+  background: #2c3e50;
+  color: white;
+}
+
+#user-btn-close:hover {
+  background: #95a5a6;
+}
+
+/* =========================================================
+   TABLA
+========================================================= */
+#user-table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  background: #fff;
+}
+
+#user-table th,
+#user-table td {
+  border: 1px solid #ddd;
+  padding: 6px 8px;
+  text-align: left;
+  font-size: 13px;
+  color: #333;
+}
+
+#user-table th {
+  background: #ecf0f1;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+#user-table tr:nth-child(even) {
+  background: #f8f9fa;
+}
+
+#user-table tr:hover {
+  background: #e9f3ff;
+}
+
+/* Inputs y selects dentro de celdas */
+#user-table .user-input,
+#user-table .user-select {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 13px;
+  padding: 3px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+}
+
+#user-table .user-input:focus,
+#user-table .user-select:focus {
+  border-color: #3498db;
+  outline: none;
+  box-shadow: 0 0 2px #3498db;
+}
+
+/* Footer (filtros) */
+#user-table tfoot input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 3px;
+  font-size: 13px;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  background: #f9f9f9;
+  transition: all 0.2s;
+}
+
+#user-table tfoot input:focus {
+  border-color: #2c3e50;
+  background: #fff;
+}
+
+/* Forzar anchos coherentes */
+#user-table tfoot th:nth-child(8),
+#user-table tfoot th:nth-child(9),
+#user-table tfoot th:nth-child(10) {
+  width: 50px;
+}
+#user-table tfoot th:nth-child(2),
+#user-table tfoot th:nth-child(3),
+#user-table tfoot th:nth-child(4),
+#user-table tfoot th:nth-child(5) {
+  width: 100px;
+}
+
+/* =========================================================
+   BOTÓN DESHABILITADO
+========================================================= */
+.user-btn-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #ccc;
+}
+
+.user-btn-disabled:hover {
+  transform: none;
+}
+
+/* =========================================================
+   SCROLLBAR personalizadas
+========================================================= */
+.user-modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.user-modal-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 6px;
+}
+
+.user-modal-body::-webkit-scrollbar-thumb {
+  background: #b5b5b5;
+  border-radius: 6px;
+}
+
+.user-modal-body::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+/* ****** */
+/* =========================================================
+   ESTILO UNIFICADO PARA BOTONES DE CABECERA (PDF, EXCEL, ADICIONAR)
+   Igual que los de Guardar y Cerrar
+========================================================= */
+
+/* Aplica al contenedor de botones de DataTables */
+.dt-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Botones principales */
+.dt-buttons > button.dt-button,
+.user-modal-header .user-btn {
+  background: #2c3e50 !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 10px 22px !important;
+  font-size: 14px !important;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out !important;
+  box-shadow: none !important;
+}
+
+/* Hover y Active */
+.dt-buttons > button.dt-button:hover,
+.user-modal-header .user-btn:hover {
+  background: #34495e !important;
+  transform: translateY(-1px);
+}
+
+.dt-buttons > button.dt-button:active,
+.user-modal-header .user-btn:active {
+  background: #1f2d3a !important;
+  transform: translateY(0);
+}
+
+/* Botón deshabilitado */
+.dt-buttons > button.dt-button:disabled,
+.user-modal-header .user-btn:disabled {
+  background: #66717b !important;
+  color: #bdc3c7 !important;
+  cursor: not-allowed !important;
+  opacity: 0.6;
+}
+
+/* Quitar borde y sombra azul de enfoque */
+.dt-buttons > button.dt-button:focus,
+.user-modal-header .user-btn:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.user-errors {
+  color: #b71c1c;
+  background: #ffebee;
+  border: 1px solid #ef9a9a;
+  padding: 6px 10px;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+.user-errors.hidden { display: none; }
+
+.user-input-error,
+.user-select-error {
+  border-color: #e53935 !important;
+  background-color: #ffebee;
+}
+
+.perm-dropdown-wrapper {
+    position: relative;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 4px 6px; /* un poco más compacto */
+    cursor: pointer;
+    min-width: 120px;
+    background-color: white;
+    font-size: 0.85rem;
+}
+
+.perm-display {
+    height: 1.5rem; /* mantener altura de celda */
+    cursor: pointer;
+}
+
+
+.perm-display::after {
+    content: "▼";
+    float: right;
+    margin-left: 6px;
+    font-size: 0.7rem;
+}
+
+
+.perm-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    max-height: 180px;
+    overflow-y: auto;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    width: 100%;
+    padding: 4px;
+}
+
+.perm-menu.hidden {
+    display: none;
+}
+
+.perm-item {
+    display: block;
+    padding: 2px 4px;
+    font-size: 0.85rem;
+}
+.perm-item input {
+    margin-right: 6px;
+}
+

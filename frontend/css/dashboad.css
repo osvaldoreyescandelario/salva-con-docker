@@ -1,0 +1,251 @@
+/* ===============================
+   DASHBOARD - CSS CONSOLIDADO
+   =============================== */
+
+/* BASE */
+.dash-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  font-family: system-ui, sans-serif;
+}
+
+/* HEADER */
+.dash-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dash-card-header h2 {
+  font-size: 20px;
+  color: #1e3a8a;
+  margin: 0;
+}
+
+/* FILTROS - BANDA AZUL */
+.dash-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  margin: 16px 0;
+  background-color: #024b91;
+  /* background: linear-gradient(135deg, #3e5f8a 0%, #4a5568 50%, #718096 100%); */
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* SELECTS ESTADOS CONSOLIDADOS */
+.dash-filter {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  background-color: dash-filter;
+  /* background: linear-gradient(145deg, #4682b4, #6b7280); */
+  color: white;
+  font-weight: bold;
+  font-size: 0.85rem;
+  cursor: pointer;
+  flex: 1;
+  min-width: 140px;
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dash-filter:disabled {
+  background: linear-gradient(145deg, #4682b4, #6b7280) !important;
+  color: #e6f3ff !important;
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
+}
+
+.dash-filter option {
+  color: black !important; /* Letra AZUL CLARO */
+  padding: 8px 12px !important;
+}
+
+.dash-filter option:first-child {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* SEPARACIÓN SELECTS */
+#dash-province {
+  margin-right: 0;
+}
+
+/* KPIs */
+.dash-kpi-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.dash-kpi {
+  flex: 1 1 120px;
+  padding: 12px;
+  border-radius: 10px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.dash-blue {
+  background: #3b82f6;
+}
+.dash-green {
+  background: #10b981;
+}
+.dash-red {
+  background: #ef4444;
+}
+.dash-orange {
+  background: #f59e0b;
+}
+
+/* PANEL PRINCIPAL */
+.dash-panels-row {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.dash-panel {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.dash-panel-large {
+  flex: 2 1 65%;
+  min-height: 420px;
+}
+
+.dash-panel-title {
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+  color: #1e3a8a;
+  text-align: center;
+}
+
+/* CHART */
+.dash-chart {
+  width: 100%;
+  height: 300px;
+}
+
+.dash-times {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-top: 12px;
+}
+
+.dash-times span {
+  color: #1e3a8a;
+}
+
+.dash-times b {
+  color: inherit;
+  font-weight: 700;
+}
+
+/* BOTÓN TABLERO CONTROL */
+#dash-btnTC {
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #f5f7fa, #c8d0e7);
+  box-shadow: 8px 8px 15px #a0a8ba, -8px -8px 15px #ffffff;
+  color: #222;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.3s ease;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
+  position: relative;
+  min-width: 200px;
+}
+
+#dash-btnTC:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  box-shadow: none;
+  background: linear-gradient(145deg, #e5e7eb, #d1d5db) !important;
+  color: #777;
+}
+
+#dash-btnTC:hover:not(:disabled) {
+  box-shadow: 10px 10px 18px rgba(150, 159, 174, 0.4),
+    -10px -10px 18px rgba(255, 255, 255, 0.8);
+  background: linear-gradient(145deg, #4682b4, #6b7280);
+  color: #e6f3ff;
+  transform: translateY(-1px);
+  text-shadow: none;
+}
+
+.dash-alerts-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 16px;
+}
+
+/* SVG ANIMACIONES */
+.dash-bar {
+  transition: height 0.5s ease, fill 0.5s ease;
+}
+.dash-kid,
+.dash-specialist {
+  transition: fill 0.5s ease, transform 0.3s ease;
+}
+.dash-alert {
+  animation: dash-pulse 1s infinite alternate;
+}
+
+@keyframes dash-pulse {
+  0%,
+  100% {
+    r: 4;
+    opacity: 0.6;
+  }
+  50% {
+    r: 6;
+    opacity: 1;
+  }
+}
+
+/* DATEPICKER PLACEHOLDER */
+#dash-date-range::placeholder {
+  color: #f59e0b;
+  opacity: 1;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .dash-panels-row {
+    flex-direction: column;
+  }
+
+  .dash-filter-bar {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .dash-filter {
+    max-width: none;
+    width: 100%;
+  }
+}

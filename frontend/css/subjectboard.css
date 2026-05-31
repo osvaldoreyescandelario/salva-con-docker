@@ -1,0 +1,288 @@
+/* =============================== */
+/* 🧠 TABLERO DE SUJETOS           */
+/* =============================== */
+
+.ts-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9998;
+}
+
+.d-none { display: none !important; }
+
+.ts-modal {
+  background: #fff;
+  width: 95%;
+  max-width: 1400px;
+  padding: 20px;
+  border-radius: 8px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.ts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ts-close {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* MÉTRICAS */
+.ts-metrics {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.ts-metric {
+  flex: 1;
+  padding: 15px;
+  border-radius: 6px;
+  color: #fff;
+  text-align: center;
+}
+
+.ts-metric strong {
+  font-size: 18px;
+  display: block;
+}
+
+.green { background: green; }
+.yellow { background: #f1c40f; color:#000; }
+.blue { background: #3498db; }
+.red { background: #e74c3c; }
+
+/* TABLAS */
+.ts-table-wrapper {
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.ts-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ts-table th,
+.ts-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.ts-table thead th {
+  position: sticky;
+  top: 0;
+  background: #f8f9fa;
+  z-index: 100;
+}
+
+.small-wrap { max-height: 160px; }
+
+.ts-btn-edit {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.ts-btn-delete {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* RADIOBUTTONS */
+.ts-scope {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+/* SECCIÓN INFERIOR */
+.ts-bottom {
+  display: flex;
+  gap: 20px;
+}
+
+.ts-bottom-left { flex: 3; }
+/* .ts-bottom-right { flex: 1; } */
+
+.ts-bottom-right {
+  flex: 1.5; /* más ancho que el izquierdo */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#ts-pie-nivel {
+  width: 100% !important;
+  /* max-width: 150px;   */
+  height: 300px !important; /* más alto */
+}
+
+
+.ts-charts-row {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.ts-charts-row canvas {
+  flex: 1;         /* cada canvas ocupa el mismo ancho */
+  height: 250px !important;
+  min-width: 200px; /* para que no se achique demasiado */
+}
+
+
+/* FOOTER */
+.ts-footer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#ts-close-footer {
+  background: #1e3a8a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+}
+
+.ts-actions {
+  text-align: center;
+}
+
+.ts-icon-delete {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+.ts-icon-delete:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* FILTROS */
+/* .ts-filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.ts-filters span {
+  font-weight: 500;
+}
+
+.ts-filter {
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.ts-filter:focus {
+  outline: none;
+  border-color: #3498db;
+} */
+
+
+.ts-table-header {
+  display: flex;
+  justify-content: space-between;  /* Título izquierda, filtros derecha */
+  align-items: center;             /* Verticalmente centrados */
+  margin-bottom: 15px;
+  gap: 20px;                       /* Espacio entre título y filtros */
+}
+
+.ts-filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;                        /* Espacio entre filtros */
+  flex-wrap: nowrap;               /* No saltar línea */
+}
+
+.ts-filters span {
+  font-weight: 500;
+  font-size: 14px;
+  white-space: nowrap;             /* "Filtrar:" no se parte */
+}
+
+.ts-filter {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  min-width: 100px;                /* Ancho mínimo para responsivo */
+}
+
+.ts-filter:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+/* Responsivo: filtros apilados en móviles */
+@media (max-width: 768px) {
+  .ts-table-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  .ts-filters {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+
+.ts-scope {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.ts-scope-radios {
+  display: flex;
+  gap: 15px;
+}
+
+.ts-scope-selector {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+  font-size: 14px;
+  min-width: 180px;
+}
+
+.ts-scope-selector:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.ts-scope-selector:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -1,0 +1,141 @@
+/* Modal header */
+.mgi-modal-header {
+  /* background-color: white; */
+  justify-content: center;
+  color:black;
+  border-bottom: none;
+}
+
+/* Fondo de todo el modal */
+#mgi-formModal .modal-content {
+  background-image: url('../images/mgi.jpg'); /* ruta de tu imagen */
+  background-size: cover;            /* cubre todo el área */
+  background-position: center;       /* centrada */
+  background-repeat: no-repeat;
+  color: black;                      /* aseguramos que el texto se vea */
+}
+
+/* Opcional: agregar fondo semitransparente a los inputs para que el texto sea legible */
+#mgi-formModal .form-control,
+#mgi-formModal select {
+  background-color: rgba(255, 255, 255, 0.8); /* blanco semitransparente */
+}
+
+/* Opcional: botones con fondo sólido para contraste */
+#mgi-formModal .btn {
+  background-color: chocolate; /* fondo verde */
+  color: white;                /* texto blanco */
+  font-weight: bold;
+  border: 1px solid chocolate; /* borde igual que el fondo */
+  border-radius: 8px;          /* bordes redondeados */
+  transition: all 0.2s ease;   /* para efecto suave al pasar el mouse */
+}
+
+/* Efecto hover */
+#mgi-formModal .btn:hover {
+  opacity: 0.9;                /* un poco más oscuro al pasar el mouse */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.mgi-modal-title {
+  font-weight: 700;
+}
+
+label {
+  font-size: 14px; /* por ejemplo */
+}
+
+.mgi-modal-header .close {
+  color: black !important;
+}
+
+/* Make form controls slightly larger and spaced */
+.form-control {
+  height: calc(1.8em + .75rem + 2px);
+  padding: .4rem .75rem;
+  font-size: 12px; /*0.95rem; */
+}
+
+/* A little spacing between radio options */
+.form-check-inline .form-check-input {
+  margin-left: 0;
+  margin-right: .35rem;
+}
+
+/* Small responsive tweak: ensure each .form-row .form-group stacks nicely on small screens */
+@media (max-width: 767.98px) {
+  .form-row .form-group {
+    margin-bottom: .9rem;
+  }
+}
+
+/* Optional: highlight required controls */
+input[required], select[required], textarea[required] {
+  box-shadow: none;
+}
+
+/* Controles con fondo transparente */
+#mgi-formModal .form-control,
+#mgi-formModal select,
+#mgi-formModal textarea {
+  background-color: transparent;  /* aqui */
+  color: black;                   /* Color del texto */
+  border: 1px solid rgb(233, 179, 141); /* color borde */
+  border-radius: 8px; 
+}
+
+/* Si quieres placeholder también visible */
+#mgi-formModal ::placeholder {
+  color: rgba(0,0,0,0.6);
+}
+
+/* Radios y checkboxes personalizados */
+#mgi-formModal .form-check-input {
+  background-color: transparent; /* aqui */
+  border: 1px solid rgb(233, 179, 141); /* color borde */
+  border-radius: 50%;
+  accent-color: black; /* Color del círculo cuando está seleccionado */
+}
+
+/* Opcional: al enfocar */
+#mgi-formModal .form-check-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.2);
+}
+
+/* ***************************** */
+/* Quitar checkmarks y colores verdes de campos válidos */
+.was-validated .form-control:valid,
+.was-validated .form-check-input:valid {
+  border-color: rgb(233, 179, 141); /* mantener borde neutro o del color que quieras */
+  box-shadow: none;
+}
+
+/* Evitar que el label de radio se ponga verde */
+.was-validated .form-check-input:valid ~ .form-check-label {
+  color: black; /* mantener negro */
+}
+
+/* Campos de texto deshabilitados */
+/* Inputs de texto, select y textarea */
+ input:disabled,
+select:disabled,
+textarea:disabled {
+  /* background-color: #f0f0f0 !important; */
+  color: #888 !important;
+  cursor: not-allowed !important;
+}
+
+
+input[type="radio"]:disabled + label,
+input[type="checkbox"]:disabled + label {
+  color: #888;
+  cursor: not-allowed;
+}
+
+
+.form-check-input:disabled + .form-check-label {
+  color: #888;
+  opacity: 0.7;
+  cursor: not-allowed;
+} 

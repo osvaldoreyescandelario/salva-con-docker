@@ -1,4 +1,4 @@
-name: CI Build and Push to GHCR
+name: CI/CD SAIDICDO PRO
 
 on:
   push:
@@ -42,3 +42,23 @@ jobs:
       - name: Push frontend image
         run: |
           docker push ghcr.io/${{ github.repository_owner }}/saidicdo-frontend:latest
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to VM via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/neuroadmin/saidicdodocker
+
+            git pull origin master
+
+            docker-compose pull
+
+            docker-compose up -d

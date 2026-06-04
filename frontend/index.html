@@ -1,118 +1,141 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inicio</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inicio</title>
 
-  <!-- Fuente elegante -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Fuente elegante -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
 
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      width: 100%;
-      font-family: 'Playfair Display', serif;
-      overflow: hidden;
-      background-color: #000; /* Fallback mientras carga la imagen */
-    }
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        font-family: "Playfair Display", serif;
+        overflow: hidden;
+        background-color: #000; /* Fallback mientras carga la imagen */
+      }
 
-    .full-screen {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      text-align: center;
-      color: white;
+      .full-screen {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        text-align: center;
+        color: white;
 
-      /* Imagen de fondo */
-      background-image: url('./images/initialbackground.webp');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      filter: brightness(0.7);
-      animation: slowZoom 20s infinite alternate;
-    }
+        /* Imagen de fondo */
+        background-image: url("./images/initialbackground.webp");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        filter: brightness(0.7);
+        animation: slowZoom 20s infinite alternate;
+      }
 
-    @keyframes slowZoom {
-      0% { transform: scale(1); }
-      100% { transform: scale(1.05); }
-    }
+      @keyframes slowZoom {
+        0% {
+          transform: scale(1);
+        }
+        100% {
+          transform: scale(1.05);
+        }
+      }
 
-    /* Animaciones de aparición */
-    @keyframes fadeInUp {
-      0% { opacity: 0; transform: translateY(40px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
+      /* Animaciones de aparición */
+      @keyframes fadeInUp {
+        0% {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-    /* Animación de brillo suave */
-    @keyframes glow {
-      0%, 100% { text-shadow: 0 0 10px rgba(255,165,0,0.7), 0 0 20px rgba(255,165,0,0.5); }
-      50% { text-shadow: 0 0 25px rgba(255,165,0,1), 0 0 40px rgba(255,165,0,0.8); }
-    }
+      /* Animación de brillo suave */
+      @keyframes glow {
+        0%,
+        100% {
+          text-shadow: 0 0 10px rgba(255, 165, 0, 0.7),
+            0 0 20px rgba(255, 165, 0, 0.5);
+        }
+        50% {
+          text-shadow: 0 0 25px rgba(255, 165, 0, 1),
+            0 0 40px rgba(255, 165, 0, 0.8);
+        }
+      }
 
-    /* Texto de bienvenida */
-    .welcome-text {
-      font-size: 3em;
-      font-weight: 700;
-      margin-bottom: 30px;
-      background-color: rgba(0,0,0,0.3);
-      padding: 20px 40px;
-      border-radius: 12px;
-      opacity: 0;
-      animation: fadeInUp 1.5s forwards, glow 2s ease-in-out infinite alternate 1s;
-    }
-
-    /* Botón de inicio */
-    #btnIniciar {
-      padding: 15px 50px;
-      font-size: 40px;
-      font-weight: bold;
-      cursor: pointer;
-      border: none;
-      border-radius: 12px;
-      background-color: rgba(255,165,0,0.2);
-      color: #FFD700;
-      text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
-      transition: all 0.3s ease;
-      opacity: 0;
-      animation: fadeInUp 2s forwards 0.8s, glow 2s ease-in-out infinite alternate 2s;
-    }
-
-    #btnIniciar:hover {
-      background-color: rgba(255,165,0,0.6);
-      color: white;
-      transform: scale(1.05);
-    }
-
-    @media (max-width: 768px) {
+      /* Texto de bienvenida */
       .welcome-text {
-        font-size: 2em;
-        padding: 15px 25px;
+        font-size: 3em;
+        font-weight: 700;
+        margin-bottom: 30px;
+        background-color: rgba(0, 0, 0, 0.3);
+        padding: 20px 40px;
+        border-radius: 12px;
+        opacity: 0;
+        animation: fadeInUp 1.5s forwards,
+          glow 2s ease-in-out infinite alternate 1s;
       }
 
+      /* Botón de inicio */
       #btnIniciar {
-        font-size: 28px;
-        padding: 12px 35px;
+        padding: 15px 50px;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+        border: none;
+        border-radius: 12px;
+        background-color: rgba(255, 165, 0, 0.2);
+        color: #ffd700;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+        transition: all 0.3s ease;
+        opacity: 0;
+        animation: fadeInUp 2s forwards 0.8s,
+          glow 2s ease-in-out infinite alternate 2s;
       }
-    }
-  </style>
-</head>
-<body>
-  <div class="full-screen">
-    <div class="welcome-text">Bienvenido a Saidi - CDO</div>
-    <button id="btnIniciar">Iniciar</button>
-  </div>
 
-  <script>
-    document.getElementById('btnIniciar').addEventListener('click', () => {
-      window.location.href = 'main.html';
-    });
-  </script>
-</body>
+      #btnIniciar:hover {
+        background-color: rgba(255, 165, 0, 0.6);
+        color: white;
+        transform: scale(1.05);
+      }
+
+      @media (max-width: 768px) {
+        .welcome-text {
+          font-size: 2em;
+          padding: 15px 25px;
+        }
+
+        #btnIniciar {
+          font-size: 28px;
+          padding: 12px 35px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="full-screen">
+      <div class="welcome-text">Bienvenido a SaidiCDO</div>
+      <button id="btnIniciar">Iniciar</button>
+    </div>
+
+    <script>
+      document.getElementById("btnIniciar").addEventListener("click", () => {
+        window.location.href = "main.html";
+      });
+    </script>
+  </body>
 </html>

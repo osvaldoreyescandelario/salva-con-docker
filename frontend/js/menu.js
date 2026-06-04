@@ -9,7 +9,7 @@ async function checkAppVersion() {
     if (!response.ok) return;
 
     const buildInfo = await response.json();
-
+    console.log("buildInfo: ", buildInfo);
     // Lo guardamos en una variable global o en localStorage
     window.appVersion = buildInfo;
     console.log(

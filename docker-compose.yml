@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   mysql:
-    image: mysql:8.0
+    image: ghcr.io/osvaldoreyescandelario/mysql:8.0
     container_name: saidicdo_mysql
     restart: always
     environment:
@@ -16,23 +16,21 @@ services:
       - mysql_data:/var/lib/mysql
 
   backend:
-    build: ./backend
+    image: ghcr.io/osvaldoreyescandelario/saidicdo-backend:latest
     container_name: saidicdo_backend
     restart: always
-    working_dir: /app
-    command: npm run dev
+
     ports:
-      - "3000:3000"
+      - "3001:3000"
+
     depends_on:
       - mysql
+
     env_file:
       - ./backend/.env
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
 
   frontend:
-    image: nginx:alpine
+    image: ghcr.io/osvaldoreyescandelario/nginx:alpine
     container_name: saidicdo_frontend
     restart: always
     ports:

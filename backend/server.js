@@ -84,11 +84,6 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/api/build-info.json", (req, res) => {
-  const filePath = path.join(__dirname, "public", "build-info.json");
-  res.sendFile(filePath);
-});
-
 // --- Conexión a MySQL ---
 async function conectarMySQL() {
   try {

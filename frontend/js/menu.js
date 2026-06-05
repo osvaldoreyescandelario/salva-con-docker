@@ -3,31 +3,13 @@ import { createMGIpdf } from "./pdf.js";
 import { openVersionModal } from "./version.js";
 
 async function checkAppVersion() {
-  try {
-    // Apuntamos al archivo estático que sirve el backend
-    const response = await fetch(`${window.config.apiUrl}/build-info.json`);
-    if (!response.ok) return;
+  const response = await fetch("/build-info.json");
 
-    const buildInfo = await response.json();
-    console.log("buildInfo: ", buildInfo);
-    // Lo guardamos en una variable global o en localStorage
-    window.appVersion = buildInfo;
-    console.log(
-      `Versión actual: ${buildInfo.version} (Commit: ${buildInfo.commit})`
-    );
-
-    // 🔥 OPCIONAL: Comparar versiones para forzar recarga si hay actualización
-    const localVersion = localStorage.getItem("lastKnownVersion");
-    if (localVersion && localVersion !== buildInfo.commit) {
-      console.log("Nueva versión detectada, recargando...");
-      localStorage.setItem("lastKnownVersion", buildInfo.commit);
-      window.location.reload(true); // Fuerza recarga del servidor sin caché
-    } else {
-      localStorage.setItem("lastKnownVersion", buildInfo.commit);
-    }
-  } catch (err) {
-    console.error("No se pudo verificar la versión:", err);
+  if (!response.ok) {
+    throw new Error("No se pudo leer build-info.json");
   }
+
+  return await response.json();
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -443,15 +425,12 @@ document.addEventListener("DOMContentLoaded", function () {
     {
       selector: '.dropdown-item[href="pages/version.html"]',
       action: async () => {
-        console.log("Click en Version");
-        await checkAppVersion();
+        const appInfo = await checkAppVersion();
         openVersionModal({
-          version: `v${window.appVersion.version}`,
-          fecha: new Date(window.appVersion.buildDate).toLocaleDateString(
-            "es-ES"
-          ),
+          version: appInfo.version,
+          fecha: appInfo.date,
           entorno: "Desarrollo",
-          descripcion: `Commit ${window.appVersion.commit}`
+          descripcion: appInfo.changes
         });
       }
     }

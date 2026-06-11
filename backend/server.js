@@ -4,21 +4,15 @@ const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
-const { pool } = require("./config/db.js");
+const axios = require("axios");
 
-// --- Importación de Rutas ---
-// const usersRoutes = require("./routes/usersRoutes.js");
-// const formRoutes = require("./routes/formRoutes.js");
-// const fucRoutes = require("./routes/fucRoutes.js");
-// const statsRoutes = require("./routes/statsRoutes");
-// const auditRoutes = require("./routes/auditRoutes");
-// const alarmRoutes = require("./routes/alarmRoutes");
+const initDatabase = require("./initDatabase");
+const { pool } = require("./config/db.js");
 const mainRoutes = require("./routes/index.js");
 const { initAlarmCron } = require("./services/alarmCronService");
 
 const app = express();
 
-// --- Configuración de CORS ---
 const allowedOrigins = [
   "http://127.0.0.1:5500",
   "http://localhost:5500",
@@ -34,7 +28,6 @@ const corsOptions = {
     if (!origin) return callback(null, true);
 
     const cleanOrigin = origin.replace(/\/$/, "");
-
     if (allowedOrigins.includes(cleanOrigin)) {
       return callback(null, true);
     }
@@ -49,11 +42,10 @@ const corsOptions = {
 
 const upload = multer({
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB máximo
-    files: 5 // Máx 5 archivos
+    fileSize: 10 * 1024 * 1024,
+    files: 5
   },
   fileFilter: (req, file, cb) => {
-    // ✅ Solo imágenes y PDFs
     if (
       file.mimetype.startsWith("image/") ||
       file.mimetype === "application/pdf"
@@ -65,11 +57,9 @@ const upload = multer({
   },
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
-      // ✅ Carpeta específica (no /tmp)
       cb(null, "./uploads/");
     },
     filename: (req, file, cb) => {
-      // ✅ Nombre seguro sin caracteres especiales
       const safeName = `${Date.now()}-${Math.round(Math.random() * 1e9)}-${
         file.originalname
       }`;
@@ -78,48 +68,61 @@ const upload = multer({
   })
 });
 
-// --- Middlewares ---
 app.use(cors(corsOptions));
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// --- Conexión a MySQL ---
-async function conectarMySQL() {
-  try {
-    const connection = await pool.getConnection();
-    console.log("✅ Conectado a MySQL (pool)");
-    connection.release();
-  } catch (err) {
-    console.error("❌ Error al conectar con MySQL:", err.message);
+async function waitForMySQL(retries = 40, delay = 2000) {
+  for (let i = 1; i <= retries; i++) {
+    try {
+      const connection = await pool.getConnection();
+      connection.release();
+      console.log("✅ MySQL listo");
+      return;
+    } catch (err) {
+      console.log(`⏳ Esperando MySQL... intento ${i}/${retries}`);
+      await new Promise((r) => setTimeout(r, delay));
+    }
   }
+  throw new Error("MySQL no estuvo listo a tiempo");
 }
-conectarMySQL();
 
-app.use("/", mainRoutes);
+async function startServer() {
+  await waitForMySQL();
+  console.log("ANTES initDatabase");
+  await initDatabase();
+  console.log("DESPUÉS initDatabase");
 
-app.get("/api/server", (req, res) => res.status(200).send("OK"));
-app.get("/", (req, res) =>
-  res.json({ success: true, message: "Servidor funcionando" })
-);
+  app.use("/", mainRoutes);
 
-// --- Iniciar Cron de Alarmas ---
+  app.get("/api/server", (req, res) => res.status(200).send("OK"));
+  app.get("/", (req, res) =>
+    res.json({ success: true, message: "Servidor funcionando" })
+  );
+
+  const PORT = process.env.PORT || 4000;
+  const server = app.listen(PORT, () => {
+    console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
+  });
+
+  process.on("SIGINT", async () => {
+    await pool.end();
+    console.log("Pool de MySQL cerrado.");
+    server.close(() => process.exit(0));
+  });
+}
+
 initAlarmCron();
-
-// ************************ ACCESO A FUC ***************************************
-const axios = require("axios");
 
 const { CLIENT_ID, CLIENT_SECRET, ACCESS_TOKEN, API_BASE } = process.env;
 
 let cachedToken = null;
 let tokenExpiresAt = 0;
 
-// Función para obtener un token válido (tu código ORIGINAL)
 async function getToken() {
   const now = Date.now();
-  if (cachedToken && now < tokenExpiresAt) {
-    return cachedToken; // token aún válido
-  }
+  if (cachedToken && now < tokenExpiresAt) return cachedToken;
 
   try {
     const response = await axios.post(
@@ -136,7 +139,7 @@ async function getToken() {
     );
 
     cachedToken = response.data.access_token;
-    tokenExpiresAt = now + (response.data.expires_in - 60) * 1000; // 1 minuto antes de expirar
+    tokenExpiresAt = now + (response.data.expires_in - 60) * 1000;
     return cachedToken;
   } catch (err) {
     console.error("Error obteniendo token:", err.response?.data || err.message);
@@ -144,11 +147,9 @@ async function getToken() {
   }
 }
 
-// Función que hace TODO: nivel10 + foto (tu lógica ORIGINAL encapsulada)
 async function fetchPersonaFUC(dni) {
   const token = await getToken();
 
-  // Primer request: nivel10
   const response = await axios.get(`${process.env.API_BASE}/api/v1/nivel10`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -158,9 +159,8 @@ async function fetchPersonaFUC(dni) {
   });
 
   const persona = response.data;
-
-  // Obtenemos el ID para la foto
   const personaId = persona?.[0]?.id;
+
   if (personaId) {
     try {
       const fotoResponse = await axios.get(
@@ -169,18 +169,17 @@ async function fetchPersonaFUC(dni) {
           headers: {
             Authorization: `Bearer ${token}`
           },
-          responseType: "arraybuffer" // para recibir binario
+          responseType: "arraybuffer"
         }
       );
 
-      // Convertimos la foto a Base64 y la agregamos al objeto persona
       const base64Foto = Buffer.from(fotoResponse.data, "binary").toString(
         "base64"
       );
       persona[0].foto = `data:image/jpeg;base64,${base64Foto}`;
     } catch (fotoErr) {
       console.error("Error obteniendo foto:", fotoErr);
-      persona[0].foto = null; // si falla, ponemos null
+      persona[0].foto = null;
     }
   }
 
@@ -189,10 +188,10 @@ async function fetchPersonaFUC(dni) {
 
 async function consultarPersona(req, res) {
   const dni = req.params.dni;
+
   try {
     const token = await getToken();
 
-    // Primer request: nivel10
     const response = await axios.get(`${process.env.API_BASE}/api/v1/nivel10`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -202,9 +201,8 @@ async function consultarPersona(req, res) {
     });
 
     const persona = response.data;
-
-    // Obtenemos el ID para la foto
     const personaId = persona?.[0]?.id;
+
     if (personaId) {
       try {
         const fotoResponse = await axios.get(
@@ -213,18 +211,17 @@ async function consultarPersona(req, res) {
             headers: {
               Authorization: `Bearer ${token}`
             },
-            responseType: "arraybuffer" // para recibir binario
+            responseType: "arraybuffer"
           }
         );
 
-        // Convertimos la foto a Base64 y la agregamos al objeto persona
         const base64Foto = Buffer.from(fotoResponse.data, "binary").toString(
           "base64"
         );
         persona[0].foto = `data:image/jpeg;base64,${base64Foto}`;
       } catch (fotoErr) {
         console.error("Error obteniendo foto:", fotoErr);
-        persona[0].foto = null; // si falla, ponemos null
+        persona[0].foto = null;
       }
     }
 
@@ -247,19 +244,7 @@ app.get("/api/personas/:dni", async (req, res) => {
   }
 });
 
-// ************************FIN ACCESO A FUC ***************************************
-
-// --- Iniciar Servidor ---
-
-const PORT = process.env.PORT || 4000;
-const server = app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
-});
-
-// Graceful Shutdown
-process.on("SIGINT", async () => {
-  await pool.end();
-  console.log("Pool de MySQL cerrado.");
-  server.close();
-  process.exit(0);
+startServer().catch((err) => {
+  console.error("💥 Error arrancando servidor:", err);
+  process.exit(1);
 });

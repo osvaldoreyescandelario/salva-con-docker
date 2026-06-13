@@ -3,6 +3,7 @@ const { runQuery } = require("../utils/dbUtils");
 const { getRedisValue, setRedisValue } = require("../utils/redisUtils");
 const { handleUserPermissions } = require("../services/userService");
 const { sendEmail } = require("../config/mailer");
+const bcrypt = require("bcrypt");
 
 const {
   auditAction,
@@ -35,6 +36,7 @@ exports.usersid = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
+  console.log("ENTRO EN LOGIN");
   const { user, pass } = req.body;
 
   if (!user || !pass) {
@@ -64,9 +66,9 @@ exports.login = async (req, res) => {
     }
 
     const userData = results[0];
-
+    const okpass = bcrypt.compareSync(pass, userData.userpass);
     // Contraseña incorrecta
-    if (userData.userpass !== pass) {
+    if (!okpass) {
       await auditAction({
         req,
         actor: null,

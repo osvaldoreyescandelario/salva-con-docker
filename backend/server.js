@@ -90,30 +90,26 @@ async function waitForMySQL(retries = 40, delay = 2000) {
 
 async function startServer() {
   await waitForMySQL();
-  console.log("ANTES initDatabase");
+
   await initDatabase();
-  console.log("DESPUÉS initDatabase");
 
   app.use("/", mainRoutes);
 
-  app.get("/api/server", (req, res) => res.status(200).send("OK"));
-  app.get("/", (req, res) =>
-    res.json({ success: true, message: "Servidor funcionando" })
-  );
-
   const PORT = process.env.PORT || 4000;
-  const server = app.listen(PORT, () => {
-    console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
-  });
 
-  process.on("SIGINT", async () => {
-    await pool.end();
-    console.log("Pool de MySQL cerrado.");
-    server.close(() => process.exit(0));
+  app.listen(PORT, () => {
+    console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
   });
 }
 
+startServer().catch((err) => {
+  console.error("💥 Error arrancando servidor:", err);
+  process.exit(1);
+});
+
 initAlarmCron();
+
+app.get("/api/server", (req, res) => res.status(200).send("OK"));
 
 const { CLIENT_ID, CLIENT_SECRET, ACCESS_TOKEN, API_BASE } = process.env;
 
